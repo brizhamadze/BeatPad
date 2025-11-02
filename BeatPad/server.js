@@ -5,6 +5,13 @@ const WebSocket = require('ws');
 // Use PORT from environment variable (for Railway, Render, Fly.io) or default to 8001
 const PORT = process.env.PORT || 8001;
 
+// Game state variables
+let clients = new Map(); // userId -> WebSocket
+let roundNumber = 1;
+let isRoundActive = false;
+let roundTimer = null;
+let winningWord = null;
+
 // Create HTTP server for WebSocket upgrade handling
 const server = http.createServer((req, res) => {
   // Health check endpoint
@@ -27,12 +34,6 @@ const WINNING_WORDS = [
   'JAZZY', 'BLUES', 'ROCKS', 'SOUND', 'VOICE', 'RHYTHM', 'MELODY', 'CHORD',
   'PIANO', 'GUITAR', 'DRUMS', 'BASS', 'SONG', 'TUNE', 'NOTE', 'KEY'
 ];
-
-let clients = new Map(); // userId -> WebSocket
-let roundNumber = 1;
-let isRoundActive = false;
-let roundTimer = null;
-let winningWord = null;
 
 console.log(`BeatPad WebSocket server running on port ${PORT}`);
 console.log(`Connect from client using: ws://localhost:${PORT} (or wss://your-domain for production)`);
