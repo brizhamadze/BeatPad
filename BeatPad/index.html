@@ -483,6 +483,103 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+
+    .sound-selector {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: hsla(0, 0%, 0%, 0.3);
+      border-radius: 12px;
+      margin: 0 auto;
+      margin-bottom: 15px;
+      border: 2px solid hsla(0, 0%, 100%, 0.1);
+      order: 0.4;
+    }
+
+    .sound-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.6);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .sound-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sound-btn {
+      background: hsla(0, 0%, 100%, 0.1);
+      border: 2px solid hsla(0, 0%, 100%, 0.2);
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .sound-btn:hover {
+      background: hsla(0, 0%, 100%, 0.15);
+      border-color: hsla(0, 0%, 100%, 0.3);
+      transform: scale(1.1);
+    }
+
+    .sound-btn.active {
+      background: hsla(180, 70%, 40%, 0.4);
+      border-color: hsl(180, 100%, 60%);
+      box-shadow: 0 0 12px hsla(180, 100%, 50%, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .sound-selector {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        gap: 8px;
+      }
+      
+      .sound-label {
+        font-size: 10px;
+        margin-right: 6px;
+      }
+      
+      .sound-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sound-selector {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        gap: 6px;
+      }
+      
+      .sound-label {
+        font-size: 9px;
+        margin-right: 4px;
+      }
+      
+      .sound-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+      }
+    }
     
     .winning-word-display {
       display: flex;
@@ -1173,6 +1270,17 @@
     </div>
   </div>
   
+  <div class="sound-selector">
+    <div class="sound-label">Sound:</div>
+    <div class="sound-buttons">
+      <button class="sound-btn active" data-sound="robot" title="Robot">🤖</button>
+      <button class="sound-btn" data-sound="drums" title="Drums">🥁</button>
+      <button class="sound-btn" data-sound="piano" title="Piano">🎹</button>
+      <button class="sound-btn" data-sound="violin" title="Violin">🎻</button>
+      <button class="sound-btn" data-sound="cow" title="Cow">🐄</button>
+    </div>
+  </div>
+  
   <div class="word-history" id="wordHistory"></div>
   
   <div class="staging-area">
@@ -1332,72 +1440,256 @@
       return curve;
     }
 
-    // Play pad tone
-    function playTone(padIndex) {
+    // Sound type: 'robot' | 'drums' | 'piano' | 'violin' | 'cow'
+    let selectedSound = 'robot';
+
+    // 🤖 Robot Sound (original)
+    function playRobotSound(padIndex) {
       initAudio();
-      
       const now = audioContext.currentTime;
       const baseFreq = frequencies[padIndex];
-      const duration = 0.185; // ~185ms total
+      const duration = 0.185;
       
-      // Main oscillator (square wave)
       const osc = audioContext.createOscillator();
       osc.type = 'square';
       osc.frequency.setValueAtTime(baseFreq * 1.06, now);
-      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.03); // Chirp down
+      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.03);
       
-      // Vibrato LFO
       const lfo = audioContext.createOscillator();
-      lfo.frequency.value = 6; // 6 Hz
+      lfo.frequency.value = 6;
       const lfoGain = audioContext.createGain();
-      lfoGain.gain.value = 6; // ±6 Hz
+      lfoGain.gain.value = 6;
       lfo.connect(lfoGain);
       lfoGain.connect(osc.frequency);
       
-      // Ring modulation
       const ringOsc = audioContext.createOscillator();
-      ringOsc.frequency.value = 35 + (padIndex * 2); // 35-83 Hz range
+      ringOsc.frequency.value = 35 + (padIndex * 2);
       const ringGain = audioContext.createGain();
       const ringConstant = audioContext.createConstantSource();
       ringConstant.offset.value = 0.5;
-      
       ringOsc.connect(ringGain.gain);
       ringConstant.connect(ringGain);
       osc.connect(ringGain);
       
-      // Low-pass filter
       const filter = audioContext.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.value = 4200;
       filter.Q.value = 0.7;
       
-      // Waveshaper distortion
       const distortion = audioContext.createWaveShaper();
       distortion.curve = createDistortionCurve(15);
       distortion.oversample = '4x';
       
-      // Envelope gain
       const gain = audioContext.createGain();
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.8, now + 0.005); // Attack
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration); // Decay
+      gain.gain.linearRampToValueAtTime(0.8, now + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
       
-      // Connect chain
       ringGain.connect(filter);
       filter.connect(distortion);
       distortion.connect(gain);
       gain.connect(masterCompressor);
       
-      // Start/stop
       osc.start(now);
       lfo.start(now);
       ringOsc.start(now);
       ringConstant.start(now);
-      
       osc.stop(now + duration);
       lfo.stop(now + duration);
       ringOsc.stop(now + duration);
       ringConstant.stop(now + duration);
+    }
+
+    // 🥁 Drums Sound
+    function playDrumsSound(padIndex) {
+      initAudio();
+      const now = audioContext.currentTime;
+      const baseFreq = frequencies[padIndex] * 0.5; // Lower for drum-like
+      const duration = 0.12;
+      
+      // White noise for snare-like sound
+      const bufferSize = audioContext.sampleRate * duration;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = audioContext.createBufferSource();
+      noise.buffer = buffer;
+      
+      // Kick-like tone
+      const osc = audioContext.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(baseFreq * 3, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.3, now + duration);
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(8000, now);
+      filter.frequency.exponentialRampToValueAtTime(100, now + duration);
+      filter.Q.value = 1;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0.6, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      noise.connect(filter);
+      gain.connect(masterCompressor);
+      
+      osc.start(now);
+      noise.start(now);
+      osc.stop(now + duration);
+      noise.stop(now + duration);
+    }
+
+    // 🎹 Piano Sound
+    function playPianoSound(padIndex) {
+      initAudio();
+      const now = audioContext.currentTime;
+      const baseFreq = frequencies[padIndex];
+      const duration = 0.4;
+      
+      // Multiple oscillators for richness
+      const osc1 = audioContext.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.value = baseFreq;
+      
+      const osc2 = audioContext.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.value = baseFreq * 2;
+      
+      const osc3 = audioContext.createOscillator();
+      osc3.type = 'sine';
+      osc3.frequency.value = baseFreq * 3;
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 5000;
+      filter.Q.value = 1;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.4, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      
+      osc1.connect(filter);
+      osc2.connect(filter);
+      osc3.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterCompressor);
+      
+      osc1.start(now);
+      osc2.start(now);
+      osc3.start(now);
+      osc1.stop(now + duration);
+      osc2.stop(now + duration);
+      osc3.stop(now + duration);
+    }
+
+    // 🎻 Violin Sound
+    function playViolinSound(padIndex) {
+      initAudio();
+      const now = audioContext.currentTime;
+      const baseFreq = frequencies[padIndex];
+      const duration = 0.3;
+      
+      const osc = audioContext.createOscillator();
+      osc.type = 'sawtooth';
+      
+      // Vibrato effect
+      const vibrato = audioContext.createOscillator();
+      vibrato.frequency.value = 5;
+      const vibratoGain = audioContext.createGain();
+      vibratoGain.gain.value = baseFreq * 0.02; // 2% vibrato
+      vibrato.connect(vibratoGain);
+      vibratoGain.connect(osc.frequency);
+      
+      osc.frequency.setValueAtTime(baseFreq, now);
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 6000;
+      filter.Q.value = 2;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.5, now + 0.05);
+      gain.gain.linearRampToValueAtTime(0.3, now + duration * 0.7);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterCompressor);
+      
+      osc.start(now);
+      vibrato.start(now);
+      osc.stop(now + duration);
+      vibrato.stop(now + duration);
+    }
+
+    // 🐄 Cow Sound
+    function playCowSound(padIndex) {
+      initAudio();
+      const now = audioContext.currentTime;
+      const baseFreq = frequencies[padIndex] * 0.3; // Much lower for moo
+      const duration = 0.25;
+      
+      const osc = audioContext.createOscillator();
+      osc.type = 'sine';
+      // Moo-like frequency sweep
+      osc.frequency.setValueAtTime(baseFreq * 0.7, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.2, now + duration * 0.4);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + duration);
+      
+      // Bell-like harmonics
+      const osc2 = audioContext.createOscillator();
+      osc2.type = 'triangle';
+      osc2.frequency.value = baseFreq * 2;
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 2000;
+      filter.Q.value = 0.5;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.7, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      
+      osc.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterCompressor);
+      
+      osc.start(now);
+      osc2.start(now);
+      osc.stop(now + duration);
+      osc2.stop(now + duration);
+    }
+
+    // Play pad tone (dispatches to selected sound)
+    function playTone(padIndex) {
+      switch (selectedSound) {
+        case 'drums':
+          playDrumsSound(padIndex);
+          break;
+        case 'piano':
+          playPianoSound(padIndex);
+          break;
+        case 'violin':
+          playViolinSound(padIndex);
+          break;
+        case 'cow':
+          playCowSound(padIndex);
+          break;
+        case 'robot':
+        default:
+          playRobotSound(padIndex);
+          break;
+      }
     }
 
     // Pad state
@@ -1869,6 +2161,23 @@
     username = generateUsername();
     usernameValueEl.textContent = username;
     usernameDisplayEl.style.display = 'flex';
+    
+    // Initialize sound selector
+    const soundButtons = document.querySelectorAll('.sound-btn');
+    soundButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        soundButtons.forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        btn.classList.add('active');
+        // Update selected sound
+        selectedSound = btn.dataset.sound;
+        // Play a test sound on the first pad
+        if (audioContext) {
+          playTone(0);
+        }
+      });
+    });
     
     // Connect to WebSocket server (will skip if not configured)
     connectWebSocket();
