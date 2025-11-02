@@ -760,6 +760,7 @@
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      z-index: 1; /* Base z-index for all pads */
     }
     
     @media (max-width: 768px) {
@@ -841,6 +842,7 @@
         inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
         inset 0 -2px 4px hsla(0, 0%, 0%, 0.3),
         0 0 30px hsl(var(--hue), var(--pad-saturation), 50%);
+      z-index: 10; /* Active pads appear on top */
     }
 
     .pad.is-active::after {
@@ -887,6 +889,7 @@
         inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
         inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
       animation: winningPulse 1s ease-in-out infinite;
+      z-index: 8; /* Winning pads appear above normal but below active */
     }
     
     @keyframes winningPulse {
@@ -911,6 +914,7 @@
     .pad.touched {
       border-color: hsl(var(--hue), var(--pad-saturation), 60%);
       border-width: 2px;
+      z-index: 5; /* Touched pads appear above normal pads */
     }
 
     .pad-content {
