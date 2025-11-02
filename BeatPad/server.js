@@ -123,12 +123,13 @@ function handleMessage(ws, data) {
       break;
       
     case 'message':
-      // Broadcast message to all other clients
+      // Broadcast message to all other clients (including no-betting flag)
       broadcast({
         type: 'message',
         userId: data.userId,
         username: data.username,
-        message: data.message
+        message: data.message,
+        isNoBetting: data.isNoBetting || false
       }, ws);
       break;
       
