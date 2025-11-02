@@ -1,10 +1,26 @@
 // WebSocket server for BeatPad multiplayer
+const http = require('http');
 const WebSocket = require('ws');
 
 // Use PORT from environment variable (for Railway, Render, Fly.io) or default to 8001
 const PORT = process.env.PORT || 8001;
-// Bind to all interfaces (0.0.0.0) for Railway deployment
-const wss = new WebSocket.Server({ port: PORT, host: '0.0.0.0' });
+
+// Create HTTP server for WebSocket upgrade handling
+const server = http.createServer((req, res) => {
+  // Health check endpoint
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', clients: clients.size }));
+    return;
+  }
+  
+  // Default response
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('BeatPad WebSocket Server');
+});
+
+// Create WebSocket server attached to HTTP server
+const wss = new WebSocket.Server({ server });
 
 const WINNING_WORDS = [
   'HELLO', 'WORLD', 'MUSIC', 'BEATS', 'DANCE', 'PARTY', 'SMART', 'QUICK',
@@ -20,6 +36,11 @@ let winningWord = null;
 
 console.log(`BeatPad WebSocket server running on port ${PORT}`);
 console.log(`Connect from client using: ws://localhost:${PORT} (or wss://your-domain for production)`);
+
+// Start HTTP server (WebSocket server is attached to it)
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`HTTP server listening on port ${PORT}`);
+});
 
 wss.on('connection', (ws) => {
   console.log('New client connected');
