@@ -2098,6 +2098,10 @@
       isRoundActive = false;
       clearInterval(timerInterval);
       
+      // If user was typing during betting, preserve that status
+      // But if they continue typing after round ends, it becomes no-betting
+      // (wordBettingStatus already tracks if word had any betting)
+      
       // Generate random winning word (only if server not connected)
       const winningWord = WINNING_WORDS[Math.floor(Math.random() * WINNING_WORDS.length)];
       winningWordEl.textContent = winningWord;
@@ -2128,6 +2132,11 @@
         addWordToHistory(`❌ No win. Winning word: ${winningWord}`, username, null, userId);
       }
       
+      // Update current word display if user was typing
+      if (currentWord.length > 0) {
+        updateCurrentWord();
+      }
+      
       // Clear all bets after 2 seconds (keeping highlights visible)
       setTimeout(() => {
         clearAllBets();
@@ -2145,6 +2154,10 @@
       // End round with server's winning word
       isRoundActive = false;
       clearInterval(timerInterval);
+      
+      // If user was typing during betting, preserve that status
+      // But if they continue typing after round ends, it becomes no-betting
+      // (wordBettingStatus already tracks if word had any betting)
       
       winningWordEl.textContent = serverWinningWord;
       winningWordDisplayEl.style.display = 'flex';
@@ -2180,6 +2193,11 @@
         addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${serverWinningWord}`, username, null, userId);
       } else {
         addWordToHistory(`❌ No win. Winning word: ${serverWinningWord}`, username, null, userId);
+      }
+      
+      // Update current word display if user was typing
+      if (currentWord.length > 0) {
+        updateCurrentWord();
       }
       
       // Clear all bets after 2 seconds (keeping highlights visible)
