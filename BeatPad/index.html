@@ -248,13 +248,14 @@
       text-shadow: none;
     }
 
-    .balance-display {
+    .top-controls-bar {
       width: 100%;
       max-width: 1200px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
+      gap: 15px;
       padding: 15px 20px;
       background: hsla(0, 0%, 0%, 0.4);
       border-radius: 12px;
@@ -262,6 +263,168 @@
       margin-bottom: 15px;
       border: 2px solid hsla(0, 0%, 100%, 0.1);
       order: 0;
+      flex-wrap: wrap;
+    }
+    
+    .balance-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      flex: 0 0 auto;
+    }
+    
+    .balance-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .balance-amount {
+      font-size: 28px;
+      font-weight: 800;
+      color: hsl(120, 70%, 60%);
+      text-shadow: 0 0 10px hsla(120, 70%, 50%, 0.5);
+      line-height: 1;
+    }
+    
+    .balance-sheet-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      min-width: 140px;
+    }
+    
+    .balance-sheet-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .balance-sheet-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: flex-start;
+    }
+    
+    .balance-sheet-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .balance-sheet-label-small {
+      font-size: 11px;
+      color: hsla(0, 0%, 100%, 0.6);
+      font-weight: 600;
+    }
+    
+    .balance-sheet-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: hsl(180, 70%, 60%);
+      text-shadow: 0 0 8px hsla(180, 70%, 50%, 0.5);
+    }
+    
+    .betting-controller {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1 1 auto;
+      min-width: 120px;
+    }
+    
+    .betting-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .betting-controls {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .bet-btn {
+      background: hsla(0, 0%, 100%, 0.1);
+      border: 2px solid hsla(0, 0%, 100%, 0.2);
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+      font-weight: 700;
+      color: hsl(0, 0%, 100%);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .bet-btn:hover {
+      background: hsla(0, 0%, 100%, 0.15);
+      border-color: hsla(0, 0%, 100%, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .bet-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .bet-amount-input {
+      background: hsla(0, 0%, 100%, 0.1);
+      border: 2px solid hsla(0, 0%, 100%, 0.2);
+      border-radius: 6px;
+      width: 70px;
+      height: 32px;
+      font-size: 18px;
+      font-weight: 700;
+      color: hsl(180, 100%, 60%);
+      text-align: center;
+      padding: 0;
+      outline: none;
+    }
+    
+    .bet-amount-input:focus {
+      border-color: hsl(180, 100%, 60%);
+      box-shadow: 0 0 8px hsla(180, 100%, 50%, 0.3);
+    }
+    
+    .sound-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex: 0 0 auto;
+    }
+    
+    .sound-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .sound-buttons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
     
     .username-display {
@@ -296,6 +459,39 @@
     }
     
     @media (max-width: 768px) {
+      .top-controls-bar {
+        padding: 12px 15px;
+        gap: 12px;
+      }
+      
+      .balance-label,
+      .betting-label,
+      .sound-label {
+        font-size: 10px;
+      }
+      
+      .balance-amount {
+        font-size: 22px;
+      }
+      
+      .bet-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+      }
+      
+      .bet-amount-input {
+        width: 60px;
+        height: 28px;
+        font-size: 16px;
+      }
+      
+      .sound-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+      }
+      
       .username-display {
         padding: 8px 12px;
         margin-bottom: 8px;
@@ -311,6 +507,48 @@
     }
     
     @media (max-width: 480px) {
+      .top-controls-bar {
+        padding: 10px 12px;
+        gap: 10px;
+        justify-content: center;
+      }
+      
+      .balance-section,
+      .betting-controller,
+      .sound-section {
+        flex: 1 1 100%;
+        align-items: center;
+        max-width: 100%;
+      }
+      
+      .balance-label,
+      .betting-label,
+      .sound-label {
+        font-size: 9px;
+      }
+      
+      .balance-amount {
+        font-size: 20px;
+      }
+      
+      .bet-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+      }
+      
+      .bet-amount-input {
+        width: 55px;
+        height: 26px;
+        font-size: 14px;
+      }
+      
+      .sound-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+      }
+      
       .username-display {
         padding: 6px 10px;
       }
@@ -321,52 +559,6 @@
       
       .username-value {
         font-size: 12px;
-      }
-    }
-    
-    .balance-label {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: hsla(0, 0%, 100%, 0.5);
-      font-weight: 600;
-    }
-    
-    .balance-amount {
-      font-size: 32px;
-      font-weight: 800;
-      color: hsl(120, 70%, 60%);
-      text-shadow: 0 0 10px hsla(120, 70%, 50%, 0.5);
-    }
-    
-    @media (max-width: 768px) {
-      .balance-display {
-        padding: 12px 15px;
-        margin-bottom: 10px;
-        border-radius: 10px;
-      }
-      
-      .balance-label {
-        font-size: 11px;
-      }
-      
-      .balance-amount {
-        font-size: 24px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .balance-display {
-        padding: 10px 12px;
-        margin-bottom: 8px;
-      }
-      
-      .balance-label {
-        font-size: 10px;
-      }
-      
-      .balance-amount {
-        font-size: 20px;
       }
     }
 
@@ -484,45 +676,13 @@
       50% { opacity: 0.5; }
     }
 
-    .sound-selector {
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 12px 20px;
-      background: hsla(0, 0%, 0%, 0.3);
-      border-radius: 12px;
-      margin: 0 auto;
-      margin-bottom: 15px;
-      border: 2px solid hsla(0, 0%, 100%, 0.1);
-      order: 0.4;
-    }
-
-    .sound-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: hsla(0, 0%, 100%, 0.6);
-      font-weight: 600;
-      margin-right: 8px;
-    }
-
-    .sound-buttons {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
     .sound-btn {
       background: hsla(0, 0%, 100%, 0.1);
       border: 2px solid hsla(0, 0%, 100%, 0.2);
-      border-radius: 8px;
-      width: 44px;
-      height: 44px;
-      font-size: 24px;
+      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -541,44 +701,6 @@
       background: hsla(180, 70%, 40%, 0.4);
       border-color: hsl(180, 100%, 60%);
       box-shadow: 0 0 12px hsla(180, 100%, 50%, 0.5);
-    }
-
-    @media (max-width: 768px) {
-      .sound-selector {
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        gap: 8px;
-      }
-      
-      .sound-label {
-        font-size: 10px;
-        margin-right: 6px;
-      }
-      
-      .sound-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 20px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .sound-selector {
-        padding: 8px 12px;
-        margin-bottom: 8px;
-        gap: 6px;
-      }
-      
-      .sound-label {
-        font-size: 9px;
-        margin-right: 4px;
-      }
-      
-      .sound-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-      }
     }
     
     .winning-word-display {
@@ -669,6 +791,26 @@
       border-radius: 3px;
     }
 
+    .word-item.win-message {
+      font-size: 36px;
+      padding: 16px 20px;
+      font-weight: 700;
+    }
+    
+    @media (max-width: 768px) {
+      .word-item.win-message {
+        font-size: 28px;
+        padding: 12px 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .word-item.win-message {
+        font-size: 24px;
+        padding: 10px 14px;
+      }
+    }
+
     .word-item {
       background: hsla(0, 0%, 100%, 0.08);
       border-left: 3px solid hsl(180, 100%, 50%);
@@ -713,6 +855,12 @@
       font-size: 10px;
       color: hsla(0, 0%, 100%, 0.5);
       margin-left: 8px;
+    }
+    
+    .word-item.pending-message {
+      opacity: 0.5;
+      color: hsla(0, 0%, 100%, 0.4);
+      border-left-color: hsl(0, 0%, 50%);
     }
     
     .word-item.no-betting-message {
@@ -1016,6 +1164,37 @@
       z-index: 8; /* Winning pads appear above normal but below active */
     }
     
+    .pad.winning-letter {
+      border-color: hsl(45, 100%, 60%);
+      border-width: 5px;
+      background: linear-gradient(135deg, hsl(45, 100%, 60%), hsl(45, 100%, 50%));
+      box-shadow: 
+        0 0 40px hsla(45, 100%, 60%, 1),
+        0 0 80px hsla(45, 100%, 50%, 0.7),
+        0 4px 8px hsla(0, 0%, 0%, 0.4),
+        inset 0 1px 0 hsla(0, 0%, 100%, 0.2),
+        inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      animation: winningLetterPulse 1s ease-in-out infinite;
+      z-index: 9; /* Winning letter appears above all other winning pads */
+    }
+    
+    @keyframes winningLetterPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+          0 0 40px hsla(45, 100%, 60%, 1),
+          0 0 80px hsla(45, 100%, 50%, 0.7),
+          0 4px 8px hsla(0, 0%, 0%, 0.4);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 
+          0 0 50px hsla(45, 100%, 60%, 1.2),
+          0 0 100px hsla(45, 100%, 50%, 0.9),
+          0 4px 8px hsla(0, 0%, 0%, 0.4);
+      }
+    }
+    
     @keyframes winningPulse {
       0%, 100% {
         box-shadow: 
@@ -1245,9 +1424,45 @@
     spellcheck="false"
     data-form-type="other">
   
-  <div class="balance-display">
-    <div class="balance-label">Balance</div>
-    <div class="balance-amount" id="balanceAmount">$1,000</div>
+  <div class="top-controls-bar">
+    <div class="balance-section">
+      <div class="balance-label">Balance</div>
+      <div class="balance-amount" id="balanceAmount">$1,000</div>
+    </div>
+    
+    <div class="balance-sheet-section">
+      <div class="balance-sheet-label">Balance Sheet</div>
+      <div class="balance-sheet-info">
+        <div class="balance-sheet-item">
+          <span class="balance-sheet-label-small">Total Bet:</span>
+          <span class="balance-sheet-value" id="totalBetAmount">$0</span>
+        </div>
+        <div class="balance-sheet-item">
+          <span class="balance-sheet-label-small">Total Won:</span>
+          <span class="balance-sheet-value" id="totalWonAmount">$0</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="betting-controller">
+      <div class="betting-label">Bet Amount</div>
+      <div class="betting-controls">
+        <button class="bet-btn" id="betDecrease" title="Decrease bet">−</button>
+        <input type="number" class="bet-amount-input" id="betAmountInput" value="1" min="1" max="100" step="1">
+        <button class="bet-btn" id="betIncrease" title="Increase bet">+</button>
+      </div>
+    </div>
+    
+    <div class="sound-section">
+      <div class="sound-label">Sound</div>
+      <div class="sound-buttons">
+        <button class="sound-btn" data-sound="robot" title="Robot">🤖</button>
+        <button class="sound-btn" data-sound="drums" title="Drums">🥁</button>
+        <button class="sound-btn" data-sound="piano" title="Piano">🎹</button>
+        <button class="sound-btn" data-sound="violin" title="Violin">🎻</button>
+        <button class="sound-btn active" data-sound="cow" title="Cow">🐄</button>
+      </div>
+    </div>
   </div>
   
   <div class="username-display" id="usernameDisplay" style="display: none;">
@@ -1267,17 +1482,6 @@
     <div class="winning-word-display" id="winningWordDisplay" style="display: none;">
       <div class="winning-label">Winning Word</div>
       <div class="winning-word" id="winningWord">-</div>
-    </div>
-  </div>
-  
-  <div class="sound-selector">
-    <div class="sound-label">Sound:</div>
-    <div class="sound-buttons">
-      <button class="sound-btn active" data-sound="robot" title="Robot">🤖</button>
-      <button class="sound-btn" data-sound="drums" title="Drums">🥁</button>
-      <button class="sound-btn" data-sound="piano" title="Piano">🎹</button>
-      <button class="sound-btn" data-sound="violin" title="Violin">🎻</button>
-      <button class="sound-btn" data-sound="cow" title="Cow">🐄</button>
     </div>
   </div>
   
@@ -1441,7 +1645,7 @@
     }
 
     // Sound type: 'robot' | 'drums' | 'piano' | 'violin' | 'cow'
-    let selectedSound = 'robot';
+    let selectedSound = 'cow';
 
     // 🤖 Robot Sound (original)
     function playRobotSound(padIndex) {
@@ -1706,9 +1910,11 @@
       
       increment() {
         if (this.count >= MAX_COUNT) return;
+        // Don't increment count for spacebar
+        if (this.index === SPACEBAR_INDEX) return;
         
-        this.count++;
-        this.updateDisplay();
+        // Don't manually increment - count should reflect actual bets from allUsersBets
+        // This method is kept for visual feedback (sound, flash) but count is updated elsewhere
         playTone(this.index);
         
         // Trigger flash animation
@@ -1716,10 +1922,45 @@
         void this.element.offsetWidth; // Force reflow to restart animation
         this.element.classList.add('flash');
         
-        if (this.count === 1) {
-          this.element.classList.add('touched');
-          this.countLabel.classList.add('visible');
+        // Don't update count here - it will be updated after the bet is added in handleLetterPress
+        // The count will be updated after handleLetterPress processes the bet
+      }
+      
+      updateCountFromBets() {
+        // Get the letter for this pad
+        const letter = KEY_MAP[this.index];
+        if (!letter) return;
+        
+        let totalBets = 0;
+        
+        if (isRoundActive) {
+          // During betting time: only show MY bets
+          if (allUsersBets[userId] && allUsersBets[userId][letter]) {
+            totalBets += allUsersBets[userId][letter];
+          }
+          // Also include my pending bets
+          if (pendingBets[userId] && pendingBets[userId][letter]) {
+            totalBets += pendingBets[userId][letter];
+          }
+        } else {
+          // After round ends: show all bets (will be filtered to only my bets later)
+          // This is used during the win announcement period
+          for (const uid in allUsersBets) {
+            if (allUsersBets[uid][letter]) {
+              totalBets += allUsersBets[uid][letter];
+            }
+          }
+          // Also include pending bets
+          for (const uid in pendingBets) {
+            if (pendingBets[uid][letter]) {
+              totalBets += pendingBets[uid][letter];
+            }
+          }
         }
+        
+        // Cap count at 100
+        this.count = Math.min(totalBets, 100);
+        this.updateDisplay();
       }
       
       startPress() {
@@ -1734,12 +1975,15 @@
         if (this.index === BACKSPACE_INDEX) {
           handleBackspace();
           // Don't increment count for backspace
+        } else if (this.index === SPACEBAR_INDEX) {
+          // Spacebar just sends the word, don't increment count
+          // handleLetterPress is called from pointerdown handler
         } else {
           this.increment();
         }
         
-        // Schedule next action for hold-to-continue (only for non-backspace)
-        if (this.index !== BACKSPACE_INDEX && this.count < MAX_COUNT) {
+        // Schedule next action for hold-to-continue (only for non-backspace and non-spacebar)
+        if (this.index !== BACKSPACE_INDEX && this.index !== SPACEBAR_INDEX && this.count < MAX_COUNT) {
           this.holdStartTime = Date.now();
           this.scheduleNextIncrement();
         } else if (this.index === BACKSPACE_INDEX) {
@@ -1758,7 +2002,7 @@
         }
         
         // For regular pads, stop if count reached max
-        if (this.index !== BACKSPACE_INDEX && this.count >= MAX_COUNT) {
+        if (this.index !== BACKSPACE_INDEX && this.index !== SPACEBAR_INDEX && this.count >= MAX_COUNT) {
           return;
         }
         
@@ -1770,8 +2014,13 @@
           if (this.index === BACKSPACE_INDEX) {
             handleBackspace();
             this.scheduleNextIncrement();
-          } else {
+          } else if (this.index !== SPACEBAR_INDEX) {
+            // For regular keys, trigger the increment (visual feedback) and handleLetterPress
             this.increment();
+            const letter = KEY_MAP[this.index];
+            if (letter) {
+              handleLetterPress(letter);
+            }
             this.scheduleNextIncrement();
           }
         }, delay);
@@ -1796,7 +2045,18 @@
       }
       
       updateDisplay() {
-        this.countLabel.textContent = this.count;
+        // Don't update count label for spacebar
+        if (this.index !== SPACEBAR_INDEX && this.countLabel) {
+          this.countLabel.textContent = this.count;
+          // Show label if count > 0, hide if count is 0
+          if (this.count > 0) {
+            this.countLabel.classList.add('visible');
+            this.element.classList.add('touched');
+          } else {
+            this.countLabel.classList.remove('visible');
+            this.element.classList.remove('touched');
+          }
+        }
         this.updateSaturation();
       }
       
@@ -1837,7 +2097,7 @@
       pad.setAttribute('role', 'gridcell');
       let keyText;
       if (KEY_MAP[i] === ' ') {
-        keyText = 'SPACE';
+        keyText = 'SEND';
       } else if (KEY_MAP[i] === 'BACKSPACE') {
         keyText = '⌫';
       } else {
@@ -1856,10 +2116,13 @@
       keyLabel.textContent = keyText;
       padContent.appendChild(keyLabel);
       
-      // Count label (hidden until first activation)
+      // Count label (hidden until first activation, and hidden for spacebar)
       const countLabel = document.createElement('div');
       countLabel.className = 'count-label';
       countLabel.textContent = '0';
+      if (i === SPACEBAR_INDEX) {
+        countLabel.style.display = 'none'; // Hide count for spacebar
+      }
       padContent.appendChild(countLabel);
       
       pad.appendChild(padContent);
@@ -1934,7 +2197,9 @@
     }
     
     const WS_URL = getWebSocketURL();
-    console.log('Connecting to WebSocket:', WS_URL);
+    if (WS_URL) {
+      console.log('Connecting to WebSocket:', WS_URL);
+    }
     
     function generateUserId() {
       return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
@@ -2036,7 +2301,19 @@
           break;
         case 'message':
           // Another user sent a message
-          addWordToHistory(data.message, data.username, null, data.userId, data.isNoBetting || false);
+          // If it's marked as pending or we're in no betting time, mark it as pending
+          const isPendingMessage = data.isPending || !isRoundActive;
+          const msgElement = addWordToHistory(data.message, data.username, null, data.userId, data.isNoBetting || false, isPendingMessage);
+          
+          // Store pending message from other users
+          if (isPendingMessage && msgElement) {
+            allPendingMessages.push({
+              element: msgElement,
+              word: data.message,
+              userId: data.userId,
+              username: data.username
+            });
+          }
           break;
         case 'roundStart':
           // Server started a new round - sync up
@@ -2055,8 +2332,30 @@
             roundNumber = data.roundNumber;
             roundNumberEl.textContent = roundNumber;
           }
-          // End round locally with server's winning word
-          endRoundFromServer(data.winningWord);
+          // End round locally with server's winning word and winning letter
+          // CRITICAL: Always use server's winningLetter - never generate locally
+          const serverWinningLetter = data.winningLetter;
+          if (!serverWinningLetter) {
+            console.error('ERROR: Server did not send winningLetter!', data);
+            // Only use deterministic fallback as last resort
+            if (data.winningWord) {
+              const winningWordLetters = data.winningWord.split('');
+              let hash = 0;
+              for (let i = 0; i < data.winningWord.length; i++) {
+                hash += data.winningWord.charCodeAt(i);
+              }
+              hash += data.roundNumber || roundNumber;
+              const letterIndex = hash % winningWordLetters.length;
+              const fallbackLetter = winningWordLetters[letterIndex];
+              console.warn('Using deterministic fallback winning letter:', fallbackLetter);
+              endRoundFromServer(data.winningWord, fallbackLetter);
+            } else {
+              console.error('Cannot process roundEnd: missing both winningWord and winningLetter');
+            }
+          } else {
+            console.log('Received roundEnd from server:', data.winningWord, 'winningLetter:', serverWinningLetter);
+            endRoundFromServer(data.winningWord, serverWinningLetter);
+          }
           break;
         case 'timerUpdate':
           // Update timer from server
@@ -2108,18 +2407,21 @@
       }
       allUsersBets[userId][letter] += betAmount;
       
-      // Update pad display to show total bets from all users
-      const padState = keyToPad.get(letter);
-      if (padState) {
-        // Calculate total bets on this letter from all users
-        let totalBets = 0;
-        for (const uid in allUsersBets) {
-          if (allUsersBets[uid][letter]) {
-            totalBets += allUsersBets[uid][letter];
+      // During betting time, don't update pad displays - we only show MY bets
+      // After round ends, other users' bets will be cleared anyway
+      if (!isRoundActive) {
+        // After round ends, update pad displays (but only my bets will show after clearing)
+        const padState = keyToPad.get(letter);
+        if (padState) {
+          padState.updateCountFromBets();
+        }
+        
+        // Also update all other pads
+        for (let i = 0; i < pads.length; i++) {
+          if (pads[i] !== padState) {
+            pads[i].updateCountFromBets();
           }
         }
-        padState.count = totalBets;
-        padState.updateDisplay();
       }
       
       // Don't show bet notifications in chat - only update pad counts
@@ -2130,13 +2432,21 @@
     let currentWord = '';
     let currentSaturation = 0;
     let balance = 1000; // Starting balance
-    const BET_AMOUNT = 1; // Cost per letter bet
+    let betAmount = 1; // Cost per letter bet (configurable)
     let roundNumber = 1;
     let timeRemaining = 10;
     let timerInterval = null;
     let isRoundActive = false; // Start inactive, wait for server
     let letterBets = {}; // Track bets per letter: { 'A': 5, 'B': 3, ... }
     let wordBettingStatus = false; // Track if current word was typed during betting time
+    let currentWordBetTotal = 0; // Total amount bet on current word
+    let pendingWords = []; // Array of words typed but submitted after betting time, waiting for next round
+    let allPendingMessages = []; // Array of all pending message elements (from any user) waiting for round start
+    let pendingBets = {}; // Track pending bets per letter (not charged yet): { userId: { 'A': 5, 'B': 3, ... } }
+    
+    // Balance sheet tracking
+    let totalBetAllRounds = 0; // Total amount bet across all rounds
+    let totalWonAllRounds = 0; // Total amount won across all rounds
     
     // List of words for winning pattern
     const WINNING_WORDS = [
@@ -2148,6 +2458,8 @@
     const currentWordEl = document.getElementById('currentWord');
     const wordHistoryEl = document.getElementById('wordHistory');
     const balanceAmountEl = document.getElementById('balanceAmount');
+    const totalBetAmountEl = document.getElementById('totalBetAmount');
+    const totalWonAmountEl = document.getElementById('totalWonAmount');
     const usernameDisplayEl = document.getElementById('usernameDisplay');
     const usernameValueEl = document.getElementById('usernameValue');
     const roundNumberEl = document.getElementById('roundNumber');
@@ -2179,6 +2491,59 @@
       });
     });
     
+    // Initialize betting controller
+    const betAmountInput = document.getElementById('betAmountInput');
+    const betIncreaseBtn = document.getElementById('betIncrease');
+    const betDecreaseBtn = document.getElementById('betDecrease');
+    
+    // Update bet amount display
+    function updateBetAmountDisplay() {
+      betAmountInput.value = betAmount;
+    }
+    
+    // Increase bet amount
+    betIncreaseBtn.addEventListener('click', () => {
+      if (betAmount < 100) {
+        betAmount = Math.min(100, betAmount + 1);
+        updateBetAmountDisplay();
+      }
+    });
+    
+    // Decrease bet amount
+    betDecreaseBtn.addEventListener('click', () => {
+      if (betAmount > 1) {
+        betAmount = Math.max(1, betAmount - 1);
+        updateBetAmountDisplay();
+      }
+    });
+    
+    // Handle manual input
+    betAmountInput.addEventListener('input', (e) => {
+      let value = parseInt(e.target.value);
+      if (isNaN(value) || value < 1) {
+        value = 1;
+      } else if (value > 100) {
+        value = 100;
+      }
+      betAmount = value;
+      updateBetAmountDisplay();
+    });
+    
+    // Handle change event (when user finishes typing)
+    betAmountInput.addEventListener('change', (e) => {
+      let value = parseInt(e.target.value);
+      if (isNaN(value) || value < 1) {
+        value = 1;
+      } else if (value > 100) {
+        value = 100;
+      }
+      betAmount = value;
+      updateBetAmountDisplay();
+    });
+    
+    // Initialize display
+    updateBetAmountDisplay();
+    
     // Connect to WebSocket server (will skip if not configured)
     connectWebSocket();
 
@@ -2194,18 +2559,26 @@
       }
     }
     
+    function updateBalanceSheet() {
+      totalBetAmountEl.textContent = `$${totalBetAllRounds.toLocaleString()}`;
+      totalWonAmountEl.textContent = `$${totalWonAllRounds.toLocaleString()}`;
+      
+      // Color code based on profit/loss
+      if (totalWonAllRounds > totalBetAllRounds) {
+        totalWonAmountEl.style.color = 'hsl(120, 70%, 60%)'; // Green for profit
+      } else if (totalWonAllRounds < totalBetAllRounds) {
+        totalWonAmountEl.style.color = 'hsl(0, 70%, 60%)'; // Red for loss
+      } else {
+        totalWonAmountEl.style.color = 'hsl(180, 70%, 60%)'; // Cyan for break-even
+      }
+    }
+    
     // Initialize balance display
     updateBalance();
+    updateBalanceSheet();
     
-    // Don't start round immediately - wait for server connection
-    // If server connects, it will send gameState or startRound
-    // If server doesn't connect, startRound will be called after connection timeout
-    setTimeout(() => {
-      // Only start round if server didn't connect
-      if (!connectionEstablished && !isRoundActive) {
-        startRound();
-      }
-    }, 1000); // Wait 1 second for server connection
+    // Don't start round automatically - wait for master control button
+    // Rounds will only start when the master control button is clicked
 
     function updateSaturation() {
       // Cap saturation at 100%
@@ -2236,11 +2609,23 @@
       }
     }
 
-    function addWordToHistory(word, usernameParam = null, betAmount = null, messageUserId = null, isNoBetting = false) {
-      if (word.trim().length === 0) return;
+    function addWordToHistory(word, usernameParam = null, betAmount = null, messageUserId = null, isNoBetting = false, isPending = false) {
+      if (word.trim().length === 0) return null;
       
       const wordItem = document.createElement('div');
       wordItem.className = 'word-item';
+      
+      // Check if this is a win message (starts with 🎉 or ❌)
+      const isWinMessage = word.startsWith('🎉') || word.startsWith('❌');
+      if (isWinMessage) {
+        wordItem.classList.add('win-message');
+      }
+      
+      // Mark as pending if submitted during no betting time
+      if (isPending) {
+        wordItem.classList.add('pending-message');
+        wordItem.setAttribute('data-pending-word', word); // Store word for later lookup
+      }
       
       // Determine if this is the current user's message
       const isOwnMessage = messageUserId === userId || (messageUserId === null && usernameParam !== null && usernameParam === username);
@@ -2279,12 +2664,16 @@
         badgeSpan.style.marginLeft = '4px';
         wordItem.appendChild(badgeSpan);
       }
-      
       // Add bet info if provided
-      if (betAmount !== null) {
+      if (betAmount !== null && betAmount > 0) {
         const betSpan = document.createElement('span');
         betSpan.className = 'bet-info';
-        betSpan.textContent = `($${betAmount})`;
+        betSpan.textContent = ` $${betAmount.toLocaleString()}`;
+        betSpan.style.marginLeft = '6px';
+        betSpan.style.opacity = '0.8';
+        betSpan.style.fontWeight = '600';
+        betSpan.style.color = 'hsl(180, 100%, 60%)';
+        betSpan.style.fontSize = 'inherit'; // Match parent font size
         wordItem.appendChild(betSpan);
       }
       
@@ -2296,6 +2685,8 @@
       
       // Scroll to top to show new word
       wordHistoryEl.scrollTop = 0;
+      
+      return wordItem; // Return the element so we can update it later
     }
 
     function handleBackspace() {
@@ -2311,11 +2702,102 @@
       timeRemaining = 10;
       currentWord = '';
       letterBets = {};
-      allUsersBets = {}; // Clear all users' bets
-      wordBettingStatus = false; // Reset betting status for new word
-      updateCurrentWord();
-      updateTimer();
-      winningWordDisplayEl.style.display = 'none';
+      // Convert pending bets to real bets and charge money
+      if (pendingBets[userId]) {
+        for (const letter in pendingBets[userId]) {
+          const pendingAmount = pendingBets[userId][letter];
+          if (balance >= pendingAmount) {
+            balance -= pendingAmount;
+            
+            // Track bet for this letter
+            if (!letterBets[letter]) {
+              letterBets[letter] = 0;
+            }
+            letterBets[letter] += pendingAmount;
+            
+            // Move from pending to real bets
+            if (!allUsersBets[userId]) {
+              allUsersBets[userId] = {};
+            }
+            if (!allUsersBets[userId][letter]) {
+              allUsersBets[userId][letter] = 0;
+            }
+            allUsersBets[userId][letter] += pendingAmount;
+            
+            // Update pad display
+            const padState = keyToPad.get(letter);
+            if (padState) {
+              padState.updateCountFromBets();
+            }
+            
+            // Broadcast bet to all users
+            sendMessage({
+              type: 'bet',
+              userId: userId,
+              username: username,
+              letter: letter,
+              betAmount: pendingAmount,
+              balance: balance
+            });
+          }
+        }
+        // Clear pending bets for this user
+        delete pendingBets[userId];
+        updateBalance();
+      }
+      
+      // Update all pad counts to reflect current state (including any pending bets from other users)
+      for (let i = 0; i < pads.length; i++) {
+        pads[i].updateCountFromBets();
+      }
+      
+      // Process pending words if there are any (submitted after previous betting time ended)
+      while (pendingWords.length > 0) {
+        const pendingWordData = pendingWords.shift(); // Remove first word from array
+        const word = pendingWordData.word;
+        const messageElement = pendingWordData.messageElement;
+        const pendingBetTotal = pendingWordData.betTotal; // Use stored bet total - bets already charged above
+        
+        // Update existing message element instead of adding a new one
+        if (messageElement) {
+          // Remove pending-message class to restore normal color
+          messageElement.classList.remove('pending-message');
+          messageElement.removeAttribute('data-pending-word');
+          
+          // Add bet amount if we have one
+          if (pendingBetTotal > 0) {
+            // Check if bet-info already exists
+            let betSpan = messageElement.querySelector('.bet-info');
+            if (!betSpan) {
+              betSpan = document.createElement('span');
+              betSpan.className = 'bet-info';
+              betSpan.style.marginLeft = '6px';
+              betSpan.style.opacity = '0.8';
+              betSpan.style.fontWeight = '600';
+              betSpan.style.color = 'hsl(180, 100%, 60%)';
+              betSpan.style.fontSize = 'inherit';
+              messageElement.appendChild(betSpan);
+            }
+            betSpan.textContent = ` $${pendingBetTotal.toLocaleString()}`;
+          }
+        }
+        
+        // Don't send duplicate WebSocket message - message is already visible to all users as grey
+        // Bet messages are already sent above for each letter
+      }
+      
+      // Process all pending messages from all users (convert grey to normal)
+      while (allPendingMessages.length > 0) {
+        const pendingMsg = allPendingMessages.shift();
+        const msgElement = pendingMsg.element;
+        
+        // Only process messages that belong to other users (local ones already processed above)
+        if (pendingMsg.userId !== userId && msgElement && msgElement.classList.contains('pending-message')) {
+          // Remove pending-message class to restore normal color
+          msgElement.classList.remove('pending-message');
+          msgElement.removeAttribute('data-pending-word');
+        }
+      }
       
       // Don't broadcast round start - server controls rounds
       // Only start timer locally if we're not connected or server hasn't started it
@@ -2336,10 +2818,107 @@
       isRoundActive = true;
       currentWord = '';
       letterBets = {};
-      allUsersBets = {}; // Clear all users' bets
+      // Clear previous round bets, but we'll add pending bets back in below
+      allUsersBets = {};
       wordBettingStatus = false; // Reset betting status for new word
+      currentWordBetTotal = 0; // Reset bet total for new word
       updateCurrentWord();
       winningWordDisplayEl.style.display = 'none';
+      
+      // Convert pending bets to real bets and charge money
+      if (pendingBets[userId]) {
+        for (const letter in pendingBets[userId]) {
+          const pendingAmount = pendingBets[userId][letter];
+          if (balance >= pendingAmount) {
+            balance -= pendingAmount;
+            
+            // Track bet for this letter
+            if (!letterBets[letter]) {
+              letterBets[letter] = 0;
+            }
+            letterBets[letter] += pendingAmount;
+            
+            // Move from pending to real bets
+            if (!allUsersBets[userId]) {
+              allUsersBets[userId] = {};
+            }
+            if (!allUsersBets[userId][letter]) {
+              allUsersBets[userId][letter] = 0;
+            }
+            allUsersBets[userId][letter] += pendingAmount;
+            
+            // Update pad display
+            const padState = keyToPad.get(letter);
+            if (padState) {
+              padState.updateCountFromBets();
+            }
+            
+            // Broadcast bet to all users
+            sendMessage({
+              type: 'bet',
+              userId: userId,
+              username: username,
+              letter: letter,
+              betAmount: pendingAmount,
+              balance: balance
+            });
+          }
+        }
+        // Clear pending bets for this user
+        delete pendingBets[userId];
+        updateBalance();
+      }
+      
+      // Update all pad counts to reflect current state (including any pending bets from other users)
+      for (let i = 0; i < pads.length; i++) {
+        pads[i].updateCountFromBets();
+      }
+      
+      // Process pending words if there are any (submitted after previous betting time ended)
+      while (pendingWords.length > 0) {
+        const pendingWordData = pendingWords.shift(); // Remove first word from array
+        const word = pendingWordData.word;
+        const messageElement = pendingWordData.messageElement;
+        const pendingBetTotal = pendingWordData.betTotal; // Use stored bet total - bets already charged above
+        if (messageElement) {
+          // Remove pending-message class to restore normal color
+          messageElement.classList.remove('pending-message');
+          messageElement.removeAttribute('data-pending-word');
+          
+          // Add bet amount if we have one
+          if (pendingBetTotal > 0) {
+            // Check if bet-info already exists
+            let betSpan = messageElement.querySelector('.bet-info');
+            if (!betSpan) {
+              betSpan = document.createElement('span');
+              betSpan.className = 'bet-info';
+              betSpan.style.marginLeft = '6px';
+              betSpan.style.opacity = '0.8';
+              betSpan.style.fontWeight = '600';
+              betSpan.style.color = 'hsl(180, 100%, 60%)';
+              betSpan.style.fontSize = 'inherit';
+              messageElement.appendChild(betSpan);
+            }
+            betSpan.textContent = ` $${pendingBetTotal.toLocaleString()}`;
+          }
+        }
+        
+        // Don't send duplicate WebSocket message - message is already visible to all users as grey
+        // Bet messages are already sent above for each letter
+      }
+      
+      // Process all pending messages from all users (convert grey to normal)
+      while (allPendingMessages.length > 0) {
+        const pendingMsg = allPendingMessages.shift();
+        const msgElement = pendingMsg.element;
+        
+        // Only process messages that belong to other users (local ones already processed above)
+        if (pendingMsg.userId !== userId && msgElement && msgElement.classList.contains('pending-message')) {
+          // Remove pending-message class to restore normal color
+          msgElement.classList.remove('pending-message');
+          msgElement.removeAttribute('data-pending-word');
+        }
+      }
       
       // Clear existing timer
       if (timerInterval) {
@@ -2368,14 +2947,18 @@
       }
     }
     
-    function highlightWinningKeys(winningWord) {
+    function highlightWinningKeys(winningWord, winningLetter) {
       const winningLetters = new Set(winningWord.split(''));
       
-      // Highlight pads that match winning letters
+      // Highlight all pads that match letters in the word pattern
       for (const letter of winningLetters) {
         const padState = keyToPad.get(letter);
         if (padState) {
           padState.element.classList.add('winning');
+          // If this is the winning letter, add extra highlight
+          if (letter === winningLetter) {
+            padState.element.classList.add('winning-letter');
+          }
         }
       }
     }
@@ -2384,16 +2967,13 @@
       // Reset all pad counts and remove visual states
       for (let i = 0; i < pads.length; i++) {
         const padState = pads[i];
-        padState.count = 0;
-        padState.element.classList.remove('touched', 'winning', 'is-active');
-        if (padState.countLabel) {
-          padState.countLabel.classList.remove('visible');
-          padState.countLabel.textContent = '0';
-        }
-        padState.updateDisplay();
+        padState.element.classList.remove('touched', 'winning', 'winning-letter', 'is-active');
+        // Don't reset count to 0 - update from bets instead
+        padState.updateCountFromBets();
       }
-      // Clear all users' bets tracking
-      allUsersBets = {};
+      // Don't clear allUsersBets - keep bets visible for display
+      // Also need to preserve pending bets so they show during win announcement
+      // allUsersBets = {}; // REMOVED: keep bets visible
     }
     
     function endRound() {
@@ -2413,32 +2993,128 @@
       
       // Generate random winning word (only if server not connected)
       const winningWord = WINNING_WORDS[Math.floor(Math.random() * WINNING_WORDS.length)];
-      winningWordEl.textContent = winningWord;
+      
+      // Pick ONE letter from the winning word pattern deterministically
+      // Use a simple hash of the word to ensure consistency across clients
+      const winningWordLetters = winningWord.split('');
+      // Simple hash: sum character codes modulo word length
+      let hash = 0;
+      for (let i = 0; i < winningWord.length; i++) {
+        hash += winningWord.charCodeAt(i);
+      }
+      const letterIndex = hash % winningWordLetters.length;
+      const winningLetter = winningWordLetters[letterIndex];
+      
+      winningWordEl.textContent = `${winningWord} (${winningLetter})`;
       winningWordDisplayEl.style.display = 'flex';
       
-      // Highlight winning keys first
-      highlightWinningKeys(winningWord);
+      // Highlight winning keys: all letters in pattern, with winning letter highlighted extra
+      highlightWinningKeys(winningWord, winningLetter);
       
-      // Calculate winnings for all users
-      const winningLetters = new Set(winningWord.split(''));
+      // Calculate total pool: sum of all bets on ALL letters in the winning word pattern
+      const winningWordLettersSet = new Set(winningWordLetters);
+      let totalWinningsPool = 0;
+      for (const letter of winningWordLettersSet) {
+        let totalBetsOnLetter = 0;
+        for (const uid in allUsersBets) {
+          if (allUsersBets[uid][letter]) {
+            totalBetsOnLetter += allUsersBets[uid][letter];
+          }
+        }
+        totalWinningsPool += totalBetsOnLetter;
+      }
       
       // Calculate this user's winnings
+      // Only users who bet on the winning letter can win
       let totalWinnings = 0;
-      for (const letter of winningLetters) {
-        if (letterBets[letter]) {
-          totalWinnings += letterBets[letter];
+      if (letterBets[winningLetter] && letterBets[winningLetter] > 0) {
+        // Calculate total bets on the winning letter from all users
+        let totalBetsOnWinningLetter = 0;
+        for (const uid in allUsersBets) {
+          if (allUsersBets[uid][winningLetter]) {
+            totalBetsOnWinningLetter += allUsersBets[uid][winningLetter];
+          }
         }
+        
+        // User's share percentage of the winning letter
+        const userShare = letterBets[winningLetter] / totalBetsOnWinningLetter;
+        
+        // User wins: (their share) * (total pool from all letters in pattern)
+        // Example: User bet $1 on K, total on K = $5, so share = 20%
+        // Total pool from "KITTEN" = $100
+        // User wins = 20% * $100 = $20
+        totalWinnings = userShare * totalWinningsPool;
+      }
+      
+      // Round to 2 decimal places
+      totalWinnings = Math.round(totalWinnings * 100) / 100;
+      
+      // Calculate winnings per key in the pattern
+      const winningsByLetter = {};
+      if (totalWinnings > 0 && totalWinningsPool > 0) {
+        // Calculate my share percentage
+        const myShare = totalWinnings / totalWinningsPool;
+        
+        // Distribute winnings proportionally across all letters in the pattern
+        for (const letter of winningWordLettersSet) {
+          let totalBetsOnLetter = 0;
+          for (const uid in allUsersBets) {
+            if (allUsersBets[uid][letter]) {
+              totalBetsOnLetter += allUsersBets[uid][letter];
+            }
+          }
+          // My winnings from this letter = my share * total bets on this letter
+          winningsByLetter[letter] = Math.round(myShare * totalBetsOnLetter * 100) / 100;
+        }
+      }
+      
+      // Clear other users' bets - keep only my bets
+      const myBets = allUsersBets[userId] || {};
+      allUsersBets = {};
+      allUsersBets[userId] = myBets;
+      
+      // Clear pending bets from other users
+      const myPendingBets = pendingBets[userId] || {};
+      pendingBets = {};
+      if (Object.keys(myPendingBets).length > 0) {
+        pendingBets[userId] = myPendingBets;
       }
       
       // Add winnings to balance
       balance += totalWinnings;
       updateBalance();
       
-      // Show result message
+      // Calculate total bet made in this round
+      let totalBetThisRound = 0;
+      for (const letter in letterBets) {
+        totalBetThisRound += letterBets[letter];
+      }
+      
+      // Update balance sheet totals
+      totalBetAllRounds += totalBetThisRound;
+      totalWonAllRounds += totalWinnings;
+      updateBalanceSheet();
+      
+      // Show total bet in chat
+      if (totalBetThisRound > 0) {
+        addWordToHistory(`💵 Total bet this round: $${totalBetThisRound.toLocaleString()}`, username, null, userId);
+      }
+      
+      // Show result message (will be displayed prominently)
       if (totalWinnings > 0) {
-        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${winningWord}`, username, null, userId);
+        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${winningWord}, Winning letter: ${winningLetter}`, username, null, userId);
+        
+        // Show winnings breakdown per key in the pattern
+        const winningPatternLetters = Array.from(winningWordLettersSet).sort();
+        const winningsBreakdown = winningPatternLetters
+          .filter(letter => winningsByLetter[letter] > 0)
+          .map(letter => `${letter}: $${winningsByLetter[letter].toLocaleString()}`)
+          .join(' | ');
+        if (winningsBreakdown) {
+          addWordToHistory(`💰 Winnings from pattern: ${winningsBreakdown}`, username, null, userId);
+        }
       } else {
-        addWordToHistory(`❌ No win. Winning word: ${winningWord}`, username, null, userId);
+        addWordToHistory(`❌ No win. Winning word: ${winningWord}, Winning letter: ${winningLetter}`, username, null, userId);
       }
       
       // Update current word display if user was typing
@@ -2446,43 +3122,127 @@
         updateCurrentWord();
       }
       
-      // Clear all bets after 2 seconds (keeping highlights visible)
+      // Update pad counts to show only my bets now
+      for (let i = 0; i < pads.length; i++) {
+        pads[i].updateCountFromBets();
+      }
+      
+      // Clear visual highlights after 2 seconds (keep bet counts visible)
       setTimeout(() => {
         clearAllBets();
       }, 2000);
       
-      // Start next round after 3 seconds
-      setTimeout(() => {
-        roundNumber++;
-        roundNumberEl.textContent = roundNumber;
-        startRound();
-      }, 3000);
+      // Don't automatically start next round - wait for master control
+      // setTimeout(() => {
+      //   roundNumber++;
+      //   roundNumberEl.textContent = roundNumber;
+      //   startRound();
+      // }, 3000);
     }
     
-    function endRoundFromServer(serverWinningWord) {
-      // End round with server's winning word
+    function endRoundFromServer(serverWinningWord, serverWinningLetter) {
+      // End round with server's winning word and winning letter
       isRoundActive = false;
       clearInterval(timerInterval);
       
-      // If user was typing during betting, preserve that status
-      // But if they continue typing after round ends, it becomes no-betting
-      // (wordBettingStatus already tracks if word had any betting)
+      // Validate inputs
+      if (!serverWinningWord) {
+        console.error('endRoundFromServer: serverWinningWord is undefined');
+        return;
+      }
       
-      winningWordEl.textContent = serverWinningWord;
+      // Use the winning letter from server (ensures all players see the same letter)
+      // CRITICAL: Never generate winning letter locally - always use server's value
+      let winningLetter = serverWinningLetter;
+      if (!winningLetter || typeof winningLetter !== 'string') {
+        console.error('ERROR: serverWinningLetter is invalid:', serverWinningLetter);
+        // Only use deterministic fallback if absolutely necessary
+        const winningWordLetters = serverWinningWord.split('');
+        let hash = 0;
+        for (let i = 0; i < serverWinningWord.length; i++) {
+          hash += serverWinningWord.charCodeAt(i);
+        }
+        hash += roundNumber;
+        const letterIndex = hash % winningWordLetters.length;
+        winningLetter = winningWordLetters[letterIndex];
+        console.warn('endRoundFromServer: winningLetter was invalid, using deterministic fallback:', winningLetter);
+      } else {
+        console.log('Using server-provided winning letter:', winningLetter);
+      }
+      
+      winningWordEl.textContent = `${serverWinningWord} (${winningLetter})`;
       winningWordDisplayEl.style.display = 'flex';
       
-      // Highlight winning keys first
-      highlightWinningKeys(serverWinningWord);
+      // Highlight winning keys: all letters in pattern, with winning letter highlighted extra
+      highlightWinningKeys(serverWinningWord, winningLetter);
       
-      // Calculate winnings for all users
-      const winningLetters = new Set(serverWinningWord.split(''));
+      // Calculate total pool: sum of all bets on ALL letters in the winning word pattern
+      const winningWordLettersSet = new Set(serverWinningWord.split(''));
+      let totalWinningsPool = 0;
+      for (const letter of winningWordLettersSet) {
+        let totalBetsOnLetter = 0;
+        for (const uid in allUsersBets) {
+          if (allUsersBets[uid][letter]) {
+            totalBetsOnLetter += allUsersBets[uid][letter];
+          }
+        }
+        totalWinningsPool += totalBetsOnLetter;
+      }
       
       // Calculate this user's winnings
+      // Only users who bet on the winning letter can win
       let totalWinnings = 0;
-      for (const letter of winningLetters) {
-        if (letterBets[letter]) {
-          totalWinnings += letterBets[letter];
+      if (letterBets[winningLetter] && letterBets[winningLetter] > 0) {
+        // Calculate total bets on the winning letter from all users
+        let totalBetsOnWinningLetter = 0;
+        for (const uid in allUsersBets) {
+          if (allUsersBets[uid][winningLetter]) {
+            totalBetsOnWinningLetter += allUsersBets[uid][winningLetter];
+          }
         }
+        
+        // User's share percentage of the winning letter
+        const userShare = letterBets[winningLetter] / totalBetsOnWinningLetter;
+        
+        // User wins: (their share) * (total pool from all letters in pattern)
+        // Example: User bet $1 on K, total on K = $5, so share = 20%
+        // Total pool from "KITTEN" = $100
+        // User wins = 20% * $100 = $20
+        totalWinnings = userShare * totalWinningsPool;
+      }
+      
+      // Round to 2 decimal places
+      totalWinnings = Math.round(totalWinnings * 100) / 100;
+      
+      // Calculate winnings per key in the pattern
+      const winningsByLetter = {};
+      if (totalWinnings > 0 && totalWinningsPool > 0) {
+        // Calculate my share percentage
+        const myShare = totalWinnings / totalWinningsPool;
+        
+        // Distribute winnings proportionally across all letters in the pattern
+        for (const letter of winningWordLettersSet) {
+          let totalBetsOnLetter = 0;
+          for (const uid in allUsersBets) {
+            if (allUsersBets[uid][letter]) {
+              totalBetsOnLetter += allUsersBets[uid][letter];
+            }
+          }
+          // My winnings from this letter = my share * total bets on this letter
+          winningsByLetter[letter] = Math.round(myShare * totalBetsOnLetter * 100) / 100;
+        }
+      }
+      
+      // Clear other users' bets - keep only my bets
+      const myBets = allUsersBets[userId] || {};
+      allUsersBets = {};
+      allUsersBets[userId] = myBets;
+      
+      // Clear pending bets from other users
+      const myPendingBets = pendingBets[userId] || {};
+      pendingBets = {};
+      if (Object.keys(myPendingBets).length > 0) {
+        pendingBets[userId] = myPendingBets;
       }
       
       // Add winnings to balance
@@ -2497,11 +3257,37 @@
         balance: balance
       });
       
-      // Show result message
+      // Calculate total bet made in this round
+      let totalBetThisRound = 0;
+      for (const letter in letterBets) {
+        totalBetThisRound += letterBets[letter];
+      }
+      
+      // Update balance sheet totals
+      totalBetAllRounds += totalBetThisRound;
+      totalWonAllRounds += totalWinnings;
+      updateBalanceSheet();
+      
+      // Show total bet in chat
+      if (totalBetThisRound > 0) {
+        addWordToHistory(`💵 Total bet this round: $${totalBetThisRound.toLocaleString()}`, username, null, userId);
+      }
+      
+      // Show result message (will be displayed prominently)
       if (totalWinnings > 0) {
-        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${serverWinningWord}`, username, null, userId);
+        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${serverWinningWord}, Winning letter: ${winningLetter}`, username, null, userId);
+        
+        // Show winnings breakdown per key in the pattern
+        const winningPatternLetters = Array.from(winningWordLettersSet).sort();
+        const winningsBreakdown = winningPatternLetters
+          .filter(letter => winningsByLetter[letter] > 0)
+          .map(letter => `${letter}: $${winningsByLetter[letter].toLocaleString()}`)
+          .join(' | ');
+        if (winningsBreakdown) {
+          addWordToHistory(`💰 Winnings from pattern: ${winningsBreakdown}`, username, null, userId);
+        }
       } else {
-        addWordToHistory(`❌ No win. Winning word: ${serverWinningWord}`, username, null, userId);
+        addWordToHistory(`❌ No win. Winning word: ${serverWinningWord}, Winning letter: ${winningLetter}`, username, null, userId);
       }
       
       // Update current word display if user was typing
@@ -2509,7 +3295,12 @@
         updateCurrentWord();
       }
       
-      // Clear all bets after 2 seconds (keeping highlights visible)
+      // Update pad counts to show only my bets now
+      for (let i = 0; i < pads.length; i++) {
+        pads[i].updateCountFromBets();
+      }
+      
+      // Clear visual highlights after 2 seconds (keep bet counts visible)
       setTimeout(() => {
         clearAllBets();
       }, 2000);
@@ -2521,38 +3312,70 @@
       // Always allow typing - don't block when round is inactive
       
       if (letter === ' ') {
-        // Space pressed - move word from staging to chat history
+        // Space pressed - submit word (bets already processed when letters were typed)
         if (currentWord.length > 0) {
-          const wasNoBetting = !isRoundActive && wordBettingStatus === false;
+          if (isRoundActive) {
+            // We're in betting time - word has bets already
+            // Send message to all users
+            sendMessage({
+              type: 'message',
+              userId: userId,
+              username: username,
+              message: currentWord,
+              isNoBetting: false
+            });
+            addWordToHistory(currentWord, username, currentWordBetTotal > 0 ? currentWordBetTotal : null, userId, false);
+          } else {
+            // We're out of betting time - save as pending for next round
+            const messageElement = addWordToHistory(currentWord, username, null, userId, false, true);
+            pendingWords.push({
+              word: currentWord,
+              betTotal: currentWordBetTotal, // Store the pending bet total
+              bettingStatus: false,
+              messageElement: messageElement // Store reference to DOM element
+            });
+            
+            // Store message element in global pending messages array
+            if (messageElement) {
+              allPendingMessages.push({
+                element: messageElement,
+                word: currentWord,
+                userId: userId,
+                username: username
+              });
+            }
+            
+            // Send WebSocket message so other users can see it as pending (grey)
+            sendMessage({
+              type: 'message',
+              userId: userId,
+              username: username,
+              message: currentWord,
+              isNoBetting: false,
+              isPending: true
+            });
+          }
           
-          // Send message to all users
-          sendMessage({
-            type: 'message',
-            userId: userId,
-            username: username,
-            message: currentWord,
-            isNoBetting: wasNoBetting
-          });
-          addWordToHistory(currentWord, username, null, userId, wasNoBetting);
+          // Reset current word
           currentWord = '';
-          currentSaturation = 0; // Reset saturation for new word
-          wordBettingStatus = false; // Reset betting status
+          currentSaturation = 0;
+          wordBettingStatus = false;
+          currentWordBetTotal = 0;
           updateCurrentWord();
         }
       } else {
-        // Regular letter - add to staging area (current word)
-        // Only charge money if round is active and we have balance
-        if (isRoundActive && balance >= BET_AMOUNT) {
-          // Betting mode: charge money and track bets
-          balance -= BET_AMOUNT;
-          updateBalance();
-          wordBettingStatus = true; // Mark that this word has betting
+        // Regular letter - process bet immediately and add to staging area
+        if (isRoundActive && balance >= betAmount) {
+          // Betting is active - process bet immediately
+          balance -= betAmount;
+          currentWordBetTotal += betAmount;
+          wordBettingStatus = true;
           
           // Track bet for this letter
           if (!letterBets[letter]) {
             letterBets[letter] = 0;
           }
-          letterBets[letter] += BET_AMOUNT;
+          letterBets[letter] += betAmount;
           
           // Track in all users bets
           if (!allUsersBets[userId]) {
@@ -2561,20 +3384,12 @@
           if (!allUsersBets[userId][letter]) {
             allUsersBets[userId][letter] = 0;
           }
-          allUsersBets[userId][letter] += BET_AMOUNT;
+          allUsersBets[userId][letter] += betAmount;
           
-          // Update pad display
+          // Update pad display immediately (show live)
           const padState = keyToPad.get(letter);
           if (padState) {
-            // Calculate total bets from all users
-            let totalBets = 0;
-            for (const uid in allUsersBets) {
-              if (allUsersBets[uid][letter]) {
-                totalBets += allUsersBets[uid][letter];
-              }
-            }
-            padState.count = totalBets;
-            padState.updateDisplay();
+            padState.updateCountFromBets();
           }
           
           // Broadcast bet to all users
@@ -2583,23 +3398,33 @@
             userId: userId,
             username: username,
             letter: letter,
-            betAmount: BET_AMOUNT,
+            betAmount: betAmount,
             balance: balance
           });
           
-          currentWord += letter;
-          currentSaturation += 1; // Increase saturation by 1 per keystroke
-          updateCurrentWord();
+          updateBalance();
         } else if (!isRoundActive) {
-          // Non-betting mode: typing is free, no bets
-          // This allows typing between rounds
-          currentWord += letter;
-          currentSaturation += 1;
-          updateCurrentWord();
-        } else {
-          // Insufficient balance during betting round
-          console.log('Insufficient balance');
+          // No betting time - track as pending bet (will be charged when round starts)
+          // Track in pending bets
+          if (!pendingBets[userId]) {
+            pendingBets[userId] = {};
+          }
+          if (!pendingBets[userId][letter]) {
+            pendingBets[userId][letter] = 0;
+          }
+          pendingBets[userId][letter] += betAmount;
+          currentWordBetTotal += betAmount;
+          
+          // Update pad display to show pending bets (live)
+          const padState = keyToPad.get(letter);
+          if (padState) {
+            padState.updateCountFromBets();
+          }
         }
+        
+        currentWord += letter;
+        currentSaturation += 1;
+        updateCurrentWord();
       }
     }
 
@@ -2617,16 +3442,19 @@
         key = e.key.toUpperCase();
       }
       
-      if (pressedKeys.has(key)) return;
-      
       const padState = keyToPad.get(key);
       if (padState) {
         e.preventDefault();
-        pressedKeys.add(key);
-        padState.startPress();
         
-        // For regular letters, also call handleLetterPress
-        // (backspace is handled in startPress)
+        // Only handle visual press animation on first press
+        const isFirstPress = !pressedKeys.has(key);
+        if (isFirstPress) {
+          pressedKeys.add(key);
+          padState.startPress();
+        }
+        
+        // Always process letter press (allows key repeat)
+        // (backspace is handled in startPress, which only runs on first press)
         if (key !== 'BACKSPACE') {
           handleLetterPress(key);
         }

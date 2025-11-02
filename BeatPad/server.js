@@ -104,7 +104,7 @@ function handleMessage(ws, data) {
         winningWord: winningWord
       }));
       
-      // Start first round if no round is active
+      // Auto-start first round if no round is active
       if (!isRoundActive && clients.size > 0) {
         startRound();
       }
@@ -194,16 +194,22 @@ function endRound() {
   // Generate random winning word
   winningWord = WINNING_WORDS[Math.floor(Math.random() * WINNING_WORDS.length)];
   
-  console.log(`Round ${roundNumber} ended. Winning word: ${winningWord}`);
+  // Pick ONE random letter from the winning word pattern
+  const winningWordLetters = winningWord.split('');
+  const winningLetter = winningWordLetters[Math.floor(Math.random() * winningWordLetters.length)];
   
-  // Notify all clients
+  console.log(`Round ${roundNumber} ended. Winning word: ${winningWord}, Winning letter: ${winningLetter}`);
+  console.log(`Broadcasting roundEnd to ${clients.size} clients with winningLetter: ${winningLetter}`);
+  
+  // Notify all clients with both winning word and winning letter
   broadcast({
     type: 'roundEnd',
     roundNumber: roundNumber,
-    winningWord: winningWord
+    winningWord: winningWord,
+    winningLetter: winningLetter
   });
   
-  // Start next round after 3 seconds
+  // Auto-start next round after 3 seconds
   setTimeout(() => {
     if (clients.size > 0) {
       startRound();
