@@ -3,7 +3,8 @@ const WebSocket = require('ws');
 
 // Use PORT from environment variable (for Railway, Render, Fly.io) or default to 8001
 const PORT = process.env.PORT || 8001;
-const wss = new WebSocket.Server({ port: PORT });
+// Bind to all interfaces (0.0.0.0) for Railway deployment
+const wss = new WebSocket.Server({ port: PORT, host: '0.0.0.0' });
 
 const WINNING_WORDS = [
   'HELLO', 'WORLD', 'MUSIC', 'BEATS', 'DANCE', 'PARTY', 'SMART', 'QUICK',
