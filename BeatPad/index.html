@@ -672,6 +672,8 @@
       background: hsla(0, 0%, 0%, 0.3);
       border-radius: 20px;
       box-shadow: 0 10px 40px hsla(0, 0%, 0%, 0.5);
+      isolation: isolate; /* Create stacking context for grid */
+      position: relative;
     }
     
     @media (max-width: 1024px) {
@@ -750,7 +752,7 @@
         hsl(var(--hue), var(--pad-saturation), 35%) 0%, 
         hsl(var(--hue), var(--pad-saturation), 25%) 100%);
       cursor: pointer;
-      transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.3s ease;
+      transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.3s ease, z-index 0.05s ease;
       box-shadow: 
         0 4px 8px hsla(0, 0%, 0%, 0.4),
         inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
@@ -761,6 +763,7 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       z-index: 1; /* Base z-index for all pads */
+      will-change: z-index, transform; /* Optimize for z-index changes */
     }
     
     @media (max-width: 768px) {
@@ -820,14 +823,14 @@
       animation: 
         flashGrow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
         glowBurst 0.25s ease-out;
-      z-index: 10;
+      z-index: 100 !important; /* Flash pads on top */
     }
 
     .pad.is-active.flash {
       animation: 
         flashGrow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
         glowBurst 0.25s ease-out;
-      z-index: 10;
+      z-index: 100 !important; /* Active flash pads on top */
     }
 
     .pad:focus-visible {
@@ -842,7 +845,7 @@
         inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
         inset 0 -2px 4px hsla(0, 0%, 0%, 0.3),
         0 0 30px hsl(var(--hue), var(--pad-saturation), 50%);
-      z-index: 10; /* Active pads appear on top */
+      z-index: 100 !important; /* Force active pads to top with !important */
     }
 
     .pad.is-active::after {
