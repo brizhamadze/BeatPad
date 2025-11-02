@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <title>Beat Pad Grid</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-touch-callout: none;
+    }
+    
+    html {
+      touch-action: manipulation;
+      height: 100%;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overscroll-behavior: none; /* Prevent pull-to-refresh */
+    }
+    
+    .mobile-input {
+      position: fixed;
+      top: -1000px;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      opacity: 0;
+      font-size: 16px; /* Prevents zoom on iOS */
+      border: none;
+      background: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      min-height: 100vh;
+      min-height: 100dvh; /* Dynamic viewport height for mobile */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 15px;
+      margin: 0;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    /* Tablet and below */
+    @media (max-width: 1024px) {
+      body {
+        padding: 15px;
+        gap: 12px;
+      }
+      
+      .container {
+        padding-bottom: 15px;
+      }
+    }
+    
+    /* Mobile and small tablets */
+    @media (max-width: 768px) {
+      body {
+        padding: 8px 10px 10px;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+    }
+    
+    /* Small mobile */
+    @media (max-width: 480px) {
+      body {
+        padding: 5px 8px 8px;
+        gap: 6px;
+      }
+    }
+
+    .container {
+      text-align: center;
+      flex-shrink: 0;
+      order: 3;
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      z-index: 5;
+      margin-top: auto;
+      padding-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+      }
+    }
+
+
+    .staging-area {
+      --saturation: 0%;
+      background: hsla(0, 0%, 0%, 0.3);
+      border: 2px dashed hsla(0, 0%, 100%, 0.15);
+      border-radius: 12px;
+      padding: 10px 15px;
+      height: 40px;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      flex-shrink: 0;
+      margin: 0 auto;
+      order: 2;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    @media (max-width: 768px) {
+      .staging-area {
+        padding: 8px 12px;
+        height: 36px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        gap: 8px;
+      }
+      
+      .staging-label {
+        font-size: 10px;
+      }
+      
+      .current-word {
+        font-size: 18px;
+      }
+      
+      .current-word.empty {
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .staging-area {
+        padding: 6px 10px;
+        height: 32px;
+        margin-bottom: 8px;
+        gap: 6px;
+      }
+      
+      .staging-label {
+        font-size: 9px;
+      }
+      
+      .current-word {
+        font-size: 16px;
+      }
+      
+      .current-word.empty {
+        font-size: 12px;
+      }
+    }
+
+    .staging-area.typing {
+      border-color: hsla(180, var(--saturation), 60%, 0.5);
+      background: hsla(180, calc(var(--saturation) * 0.3), 10%, 0.5);
+      box-shadow: 0 0 calc(var(--saturation) * 0.3px) hsla(180, var(--saturation), 50%, 0.3);
+    }
+
+    .staging-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.3);
+      font-weight: 600;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .staging-area.typing .staging-label {
+      color: hsla(180, var(--saturation), 60%, 0.5);
+    }
+
+    .current-word {
+      font-size: 24px;
+      font-weight: 700;
+      color: hsla(180, var(--saturation), 70%, 0.9);
+      text-shadow: 
+        0 1px 3px hsla(0, 0%, 0%, 0.5),
+        0 0 calc(var(--saturation) * 0.2px) hsla(180, var(--saturation), 50%, 0.4);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      transition: color 0.15s ease, text-shadow 0.15s ease;
+      line-height: 1.2;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    
+    .current-word::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    .current-word::-webkit-scrollbar-track {
+      background: hsla(0, 0%, 100%, 0.05);
+      border-radius: 2px;
+    }
+    
+    .current-word::-webkit-scrollbar-thumb {
+      background: hsla(180, 100%, 50%, 0.3);
+      border-radius: 2px;
+    }
+
+    .current-word.empty {
+      color: hsla(0, 0%, 100%, 0.15);
+      font-size: 16px;
+      font-style: italic;
+      text-shadow: none;
+    }
+
+    .balance-display {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background: hsla(0, 0%, 0%, 0.4);
+      border-radius: 12px;
+      margin: 0 auto;
+      margin-bottom: 15px;
+      border: 2px solid hsla(0, 0%, 100%, 0.1);
+      order: 0;
+    }
+    
+    .username-display {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: hsla(0, 0%, 0%, 0.3);
+      border-radius: 10px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      border: 2px solid hsla(0, 0%, 100%, 0.1);
+      order: 0.3;
+    }
+    
+    .username-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .username-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: hsl(180, 70%, 60%);
+      text-shadow: 0 0 8px hsla(180, 70%, 50%, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      .username-display {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+      }
+      
+      .username-label {
+        font-size: 10px;
+      }
+      
+      .username-value {
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .username-display {
+        padding: 6px 10px;
+      }
+      
+      .username-label {
+        font-size: 9px;
+      }
+      
+      .username-value {
+        font-size: 12px;
+      }
+    }
+    
+    .balance-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .balance-amount {
+      font-size: 32px;
+      font-weight: 800;
+      color: hsl(120, 70%, 60%);
+      text-shadow: 0 0 10px hsla(120, 70%, 50%, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      .balance-display {
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+      }
+      
+      .balance-label {
+        font-size: 11px;
+      }
+      
+      .balance-amount {
+        font-size: 24px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .balance-display {
+        padding: 10px 12px;
+        margin-bottom: 8px;
+      }
+      
+      .balance-label {
+        font-size: 10px;
+      }
+      
+      .balance-amount {
+        font-size: 20px;
+      }
+    }
+
+    .round-display {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background: hsla(0, 0%, 0%, 0.4);
+      border-radius: 12px;
+      margin: 0 auto;
+      margin-bottom: 15px;
+      border: 2px solid hsla(0, 0%, 100%, 0.1);
+      order: 0.5;
+      gap: 30px;
+    }
+    
+    .round-info,
+    .timer-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .round-label,
+    .timer-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .round-number,
+    .timer-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: hsl(180, 70%, 60%);
+      text-shadow: 0 0 10px hsla(180, 70%, 50%, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      .round-display {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        gap: 15px;
+        flex-wrap: wrap;
+        border-radius: 10px;
+      }
+      
+      .round-info,
+      .timer-display {
+        min-width: 60px;
+      }
+      
+      .round-label,
+      .timer-label {
+        font-size: 10px;
+      }
+      
+      .round-number,
+      .timer-value {
+        font-size: 20px;
+      }
+      
+      .winning-word {
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .round-display {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        gap: 12px;
+      }
+      
+      .round-info,
+      .timer-display {
+        min-width: 50px;
+      }
+      
+      .round-label,
+      .timer-label {
+        font-size: 9px;
+      }
+      
+      .round-number,
+      .timer-value {
+        font-size: 18px;
+      }
+      
+      .winning-word {
+        font-size: 20px;
+        letter-spacing: 1px;
+      }
+    }
+    
+    .timer-value.warning {
+      color: hsl(45, 70%, 60%);
+    }
+    
+    .timer-value.danger {
+      color: hsl(0, 70%, 60%);
+      animation: pulse 0.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .winning-word-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+    }
+    
+    .winning-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: hsla(0, 0%, 100%, 0.5);
+      font-weight: 600;
+    }
+    
+    .winning-word {
+      font-size: 32px;
+      font-weight: 900;
+      color: hsl(120, 100%, 60%);
+      text-shadow: 0 0 20px hsla(120, 100%, 50%, 0.8);
+      letter-spacing: 3px;
+    }
+
+    .word-history {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px;
+      background: hsla(0, 0%, 0%, 0.3);
+      border-radius: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 0 auto;
+      order: 1;
+      margin-bottom: 15px;
+      flex-shrink: 0;
+      min-height: 0;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .word-history {
+        max-height: 150px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        gap: 8px;
+      }
+      
+      .word-item {
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 6px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .word-history {
+        max-height: 120px;
+        padding: 8px;
+        margin-bottom: 8px;
+        gap: 6px;
+      }
+      
+      .word-item {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    .word-history::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .word-history::-webkit-scrollbar-track {
+      background: hsla(0, 0%, 100%, 0.05);
+      border-radius: 3px;
+    }
+
+    .word-history::-webkit-scrollbar-thumb {
+      background: hsla(180, 100%, 50%, 0.3);
+      border-radius: 3px;
+    }
+
+    .word-item {
+      background: hsla(0, 0%, 100%, 0.08);
+      border-left: 3px solid hsl(180, 100%, 50%);
+      border-radius: 8px;
+      padding: 12px 15px;
+      color: hsl(0, 0%, 100%);
+      font-size: 18px;
+      font-weight: 600;
+      word-break: break-word;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .word-item.own-message {
+      background: hsla(180, 70%, 20%, 0.3);
+      border-left: 3px solid hsl(180, 100%, 60%);
+      color: hsl(180, 70%, 85%);
+    }
+    
+    .word-item.other-message {
+      background: hsla(0, 0%, 100%, 0.08);
+      border-left: 3px solid hsl(0, 100%, 50%);
+      color: hsl(0, 0%, 90%);
+    }
+    
+    .word-item .username {
+      font-size: 12px;
+      font-weight: 700;
+      color: hsl(180, 70%, 60%);
+      margin-right: 8px;
+      opacity: 0.8;
+    }
+    
+    .word-item.own-message .username {
+      color: hsl(180, 100%, 70%);
+    }
+    
+    .word-item.other-message .username {
+      color: hsl(0, 70%, 60%);
+    }
+    
+    .word-item .bet-info {
+      font-size: 10px;
+      color: hsla(0, 0%, 100%, 0.5);
+      margin-left: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .word-item .username {
+        font-size: 10px;
+      }
+      
+      .word-item .bet-info {
+        font-size: 9px;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes highlightPulse {
+      0% {
+        background: hsla(180, 100%, 50%, 0.2);
+        border-left-color: hsl(180, 100%, 50%);
+      }
+      100% {
+        background: hsla(0, 0%, 100%, 0.08);
+        border-left-color: hsl(180, 100%, 50%);
+      }
+    }
+
+    .word-item:hover {
+      background: hsla(0, 0%, 100%, 0.12);
+    }
+
+
+    h1 {
+      color: hsl(0, 0%, 100%);
+      margin-bottom: 15px;
+      font-size: 2.5rem;
+      text-shadow: 0 0 20px hsla(180, 100%, 50%, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+        margin-top: 0;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+    }
+
+    .beat-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(10, 100px);
+      grid-template-rows: repeat(4, 100px);
+      gap: 12px;
+      padding: 20px;
+      background: hsla(0, 0%, 0%, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px hsla(0, 0%, 0%, 0.5);
+    }
+    
+    @media (max-width: 1024px) {
+      .beat-grid {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        grid-template-rows: repeat(4, 60px);
+        gap: 8px;
+        padding: 15px;
+        border-radius: 15px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .beat-grid {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        grid-template-rows: repeat(4, 44px);
+        gap: 4px;
+        padding: 8px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .beat-grid {
+        grid-template-rows: repeat(4, 40px);
+        gap: 3px;
+        padding: 6px;
+        border-radius: 10px;
+      }
+    }
+
+    .pad.spacebar {
+      grid-column: span 6;
+      width: auto;
+    }
+
+    .pad.backspace {
+      grid-column: span 2;
+      width: auto;
+    }
+
+    .pad.spacebar .key-label,
+    .pad.backspace .key-label {
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: hsla(0, 0%, 100%, 0.6);
+    }
+    
+    @media (max-width: 768px) {
+      .pad.spacebar .key-label,
+      .pad.backspace .key-label {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .pad.spacebar .key-label,
+      .pad.backspace .key-label {
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+    }
+
+
+    .pad {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      border: 2px solid hsla(0, 0%, 100%, 0.1);
+      --pad-saturation: 0%;
+      background: linear-gradient(135deg, 
+        hsl(var(--hue), var(--pad-saturation), 35%) 0%, 
+        hsl(var(--hue), var(--pad-saturation), 25%) 100%);
+      cursor: pointer;
+      transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.3s ease;
+      box-shadow: 
+        0 4px 8px hsla(0, 0%, 0%, 0.4),
+        inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      overflow: visible;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    
+    @media (max-width: 768px) {
+      .pad {
+        border-radius: 6px;
+        border-width: 1.5px;
+        min-height: 44px; /* Minimum touch target size */
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .pad {
+        border-radius: 5px;
+        border-width: 1px;
+        min-height: 40px;
+      }
+    }
+
+    @keyframes flashGrow {
+      0% {
+        transform: scale(1) translateY(0) rotate(0deg);
+        filter: brightness(1) saturate(1);
+      }
+      50% {
+        transform: scale(1.35) translateY(-3px) rotate(2deg);
+        filter: brightness(1.8) saturate(1.5);
+      }
+      100% {
+        transform: scale(1) translateY(0) rotate(0deg);
+        filter: brightness(1) saturate(1);
+      }
+    }
+
+    @keyframes glowBurst {
+      0% {
+        box-shadow: 
+          0 4px 8px hsla(0, 0%, 0%, 0.4),
+          inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+          inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      }
+      50% {
+        box-shadow: 
+          0 0 40px hsla(var(--hue), var(--pad-saturation), 50%, 0.9),
+          0 0 60px hsla(var(--hue), var(--pad-saturation), 60%, 0.6),
+          0 0 80px hsla(var(--hue), var(--pad-saturation), 70%, 0.3),
+          inset 0 0 20px hsla(var(--hue), var(--pad-saturation), 80%, 0.5);
+      }
+      100% {
+        box-shadow: 
+          0 4px 8px hsla(0, 0%, 0%, 0.4),
+          inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+          inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      }
+    }
+
+    .pad.flash {
+      animation: 
+        flashGrow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        glowBurst 0.25s ease-out;
+      z-index: 10;
+    }
+
+    .pad.is-active.flash {
+      animation: 
+        flashGrow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        glowBurst 0.25s ease-out;
+      z-index: 10;
+    }
+
+    .pad:focus-visible {
+      outline: 3px solid hsl(var(--hue), var(--pad-saturation), 60%);
+      outline-offset: 2px;
+    }
+
+    .pad.is-active {
+      transform: translateY(2px);
+      box-shadow: 
+        0 2px 4px hsla(0, 0%, 0%, 0.6),
+        inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        inset 0 -2px 4px hsla(0, 0%, 0%, 0.3),
+        0 0 30px hsl(var(--hue), var(--pad-saturation), 50%);
+    }
+
+    .pad.is-active::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 15px;
+      background: radial-gradient(circle, 
+        hsla(var(--hue), var(--pad-saturation), 50%, 0.4) 0%, 
+        transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes burstRing {
+      0% {
+        transform: scale(0.8);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    .pad.flash::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border: 3px solid hsl(var(--hue), var(--pad-saturation), 60%);
+      border-radius: 12px;
+      pointer-events: none;
+      animation: burstRing 0.4s ease-out;
+      z-index: -1;
+    }
+
+    .pad.winning {
+      border-color: hsl(120, 100%, 60%);
+      border-width: 4px;
+      box-shadow: 
+        0 0 30px hsla(120, 100%, 60%, 0.8),
+        0 0 60px hsla(120, 100%, 50%, 0.5),
+        0 4px 8px hsla(0, 0%, 0%, 0.4),
+        inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+        inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      animation: winningPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes winningPulse {
+      0%, 100% {
+        box-shadow: 
+          0 0 30px hsla(120, 100%, 60%, 0.8),
+          0 0 60px hsla(120, 100%, 50%, 0.5),
+          0 4px 8px hsla(0, 0%, 0%, 0.4),
+          inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+          inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      }
+      50% {
+        box-shadow: 
+          0 0 50px hsla(120, 100%, 70%, 1),
+          0 0 100px hsla(120, 100%, 60%, 0.8),
+          0 4px 8px hsla(0, 0%, 0%, 0.4),
+          inset 0 1px 0 hsla(0, 0%, 100%, 0.15),
+          inset 0 -2px 4px hsla(0, 0%, 0%, 0.3);
+      }
+    }
+
+    .pad.touched {
+      border-color: hsl(var(--hue), var(--pad-saturation), 60%);
+      border-width: 2px;
+    }
+
+    .pad-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* DEFAULT STATE: Small letter (20%), Big number (80%) */
+    .key-label {
+      font-size: 32px;
+      font-weight: 600;
+      color: hsla(0, 0%, 100%, 0.6);
+      text-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
+      letter-spacing: 0.5px;
+      transition: all 0.15s ease;
+      order: 1;
+    }
+
+    .count-label {
+      font-size: 48px;
+      font-weight: 800;
+      color: hsl(0, 0%, 100%);
+      text-shadow: 
+        0 3px 6px hsla(0, 0%, 0%, 0.6),
+        0 0 20px hsla(var(--hue), var(--pad-saturation), 50%, 0.3);
+      opacity: 0;
+      transition: all 0.15s ease;
+      order: 2;
+    }
+
+    .count-label.visible {
+      opacity: 1;
+    }
+
+    /* PRESSED STATE: Big letter (80%), Small number (20%) */
+    .pad.is-active .key-label {
+      font-size: 70px;
+      font-weight: 900;
+      color: hsla(0, 0%, 100%, 1);
+      text-shadow: 
+        0 4px 8px hsla(0, 0%, 0%, 0.8),
+        0 0 30px hsla(var(--hue), var(--pad-saturation), 50%, 0.5);
+      letter-spacing: -2px;
+    }
+
+    .pad.is-active .count-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: hsla(0, 0%, 100%, 0.35);
+      text-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.4);
+    }
+
+    /* Dim background when pressed */
+    .pad.is-active {
+      background: linear-gradient(135deg, 
+        hsl(var(--hue), calc(var(--pad-saturation) * 0.7), 28%) 0%, 
+        hsl(var(--hue), calc(var(--pad-saturation) * 0.8), 20%) 100%);
+    }
+
+    .progress-ring {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .progress-track {
+      fill: none;
+      stroke: hsla(0, 0%, 100%, 0.1);
+      stroke-width: 3;
+    }
+
+    .progress-bar {
+      fill: none;
+      stroke: hsl(var(--hue), var(--pad-saturation), 60%);
+      stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.16s ease, stroke 0.3s ease;
+      filter: drop-shadow(0 0 3px hsl(var(--hue), var(--pad-saturation), 50%));
+    }
+    
+    @media (max-width: 768px) {
+      .pad {
+        width: 42px;
+        height: 42px;
+      }
+      
+      .key-label {
+        font-size: 16px;
+      }
+      
+      .count-label {
+        font-size: 20px;
+      }
+      
+      .pad.is-active .key-label {
+        font-size: 30px;
+      }
+      
+      .pad.is-active .count-label {
+        font-size: 9px;
+      }
+      
+      .pad.spacebar .key-label,
+      .pad.backspace .key-label {
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+      
+      .staging-area {
+        padding: 6px 10px;
+        height: 32px;
+      }
+      
+      .staging-label {
+        font-size: 8px;
+      }
+      
+      .current-word {
+        font-size: 16px;
+      }
+      
+      .current-word.empty {
+        font-size: 12px;
+      }
+      
+      .round-display {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      
+      .round-info,
+      .timer-display {
+        min-width: 60px;
+      }
+      
+      .round-number,
+      .timer-value {
+        font-size: 20px;
+      }
+      
+      .winning-word {
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+      
+      .balance-display {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+      }
+      
+      .balance-label {
+        font-size: 12px;
+      }
+      
+      .balance-amount {
+        font-size: 24px;
+      }
+      
+      .word-history {
+        max-height: 150px;
+        padding: 10px;
+        flex-shrink: 0;
+        margin-bottom: 10px;
+      }
+      
+      .staging-area {
+        margin-bottom: 10px;
+      }
+      
+      .container {
+        padding-top: 0;
+        padding-bottom: 10px;
+      }
+      
+      .word-item {
+        font-size: 14px;
+        padding: 6px 10px;
+      }
+    }
+  </style>
+  </head>
+  <body>
+  <input 
+    type="text" 
+    class="mobile-input" 
+    id="mobileInput" 
+    inputmode="text"
+    enterkeyhint="done"
+    autocomplete="off" 
+    autocorrect="off" 
+    autocapitalize="none" 
+    spellcheck="false"
+    data-form-type="other">
+  
+  <div class="balance-display">
+    <div class="balance-label">Balance</div>
+    <div class="balance-amount" id="balanceAmount">$1,000</div>
+  </div>
+  
+  <div class="username-display" id="usernameDisplay" style="display: none;">
+    <div class="username-label">User</div>
+    <div class="username-value" id="usernameValue">-</div>
+  </div>
+  
+  <div class="round-display">
+    <div class="round-info">
+      <div class="round-label">Round</div>
+      <div class="round-number" id="roundNumber">1</div>
+    </div>
+    <div class="timer-display">
+      <div class="timer-label">Time</div>
+      <div class="timer-value" id="timerValue">10</div>
+    </div>
+    <div class="winning-word-display" id="winningWordDisplay" style="display: none;">
+      <div class="winning-label">Winning Word</div>
+      <div class="winning-word" id="winningWord">-</div>
+    </div>
+  </div>
+  
+  <div class="word-history" id="wordHistory"></div>
+  
+  <div class="staging-area">
+    <div class="staging-label">Typing...</div>
+    <div class="current-word empty" id="currentWord">Press any key</div>
+  </div>
+  
+  <div class="container">
+    <h1>Beat Pad Grid</h1>
+    <div class="beat-grid" role="grid" id="beatGrid"></div>
+  </div>
+
+  <script>
+    // ============================================
+    // WEBSOCKET CONFIGURATION
+    // ============================================
+    // For production deployment on Vercel:
+    // Set your WebSocket server URL here (e.g., from Railway, Render, Fly.io)
+    // Example: window.WS_URL = 'wss://your-app.railway.app';
+    // Leave undefined/null to use localhost (for local development)
+    // ============================================
+    // Uncomment and set your WebSocket server URL:
+    // window.WS_URL = 'wss://your-websocket-server-url.com';
+    
+    // Configuration
+    const GRID_SIZE = 7;
+    const GRID_ROWS = 4;
+    const TOTAL_PADS = 28; // 26 letters + 1 space + 1 backspace = 28 pads
+    const MAX_COUNT = 100;
+    
+    // Mobile keyboard management
+    const mobileInput = document.getElementById('mobileInput');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Hide Safari UI bars for immersive experience
+      window.scrollTo(0, 1);
+      
+      // Additional input attributes to minimize keyboard accessories
+      mobileInput.setAttribute('name', 'hidden-input');
+      mobileInput.setAttribute('readonly', 'readonly');
+      setTimeout(() => mobileInput.removeAttribute('readonly'), 100);
+      
+      // Tap anywhere to focus input
+      document.body.addEventListener('touchstart', (e) => {
+        if (!e.target.closest('.mobile-input')) {
+          setTimeout(() => mobileInput.focus(), 50);
+        }
+      });
+      
+      // Intercept mobile input and trigger key events
+      mobileInput.addEventListener('input', (e) => {
+        const inputValue = e.target.value;
+        if (inputValue.length > 0) {
+          const lastChar = inputValue.slice(-1).toUpperCase();
+          // Trigger keydown for the character
+          const keyEvent = new KeyboardEvent('keydown', {
+            key: lastChar === ' ' ? ' ' : lastChar,
+            bubbles: true
+          });
+          document.dispatchEvent(keyEvent);
+        }
+        // Clear input to allow continuous typing
+        e.target.value = '';
+      });
+      
+      // Try to auto-focus after a delay
+      setTimeout(() => {
+        mobileInput.focus();
+      }, 1000);
+    }
+
+    // Keyboard mapping in QWERTY layout
+    // Row 1: Q W E R T Y U I O P (10 keys)
+    // Row 2: A S D F G H J K L (9 keys, offset right)
+    // Row 3: Z X C V B N M (7 keys, offset more right)
+    // Row 4: Space bar (wide, centered)
+    const KEY_MAP = [
+      // Row 1 (10 keys)
+      'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+      // Row 2 (9 keys)
+      'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
+      // Row 3 (7 keys)
+      'Z', 'X', 'C', 'V', 'B', 'N', 'M',
+      // Row 4 (1 space bar, 1 backspace)
+      ' ', 'BACKSPACE'
+    ];
+    
+    // Grid positions for QWERTY layout (column, row, columnSpan)
+    // Using a 10-column grid with staggered rows for authentic QWERTY look
+    const KEY_POSITIONS = [
+      // Row 1: Q W E R T Y U I O P (10 keys, columns 1-10)
+      {col: 1, row: 1}, {col: 2, row: 1}, {col: 3, row: 1}, {col: 4, row: 1}, {col: 5, row: 1},
+      {col: 6, row: 1}, {col: 7, row: 1}, {col: 8, row: 1}, {col: 9, row: 1}, {col: 10, row: 1},
+      // Row 2: A S D F G H J K L (9 keys, starting at column 2 for offset)
+      {col: 2, row: 2}, {col: 3, row: 2}, {col: 4, row: 2}, {col: 5, row: 2}, {col: 6, row: 2},
+      {col: 7, row: 2}, {col: 8, row: 2}, {col: 9, row: 2}, {col: 10, row: 2},
+      // Row 3: Z X C V B N M (7 keys, starting at column 2 for more offset)
+      {col: 2, row: 3}, {col: 3, row: 3}, {col: 4, row: 3}, {col: 5, row: 3}, {col: 6, row: 3},
+      {col: 7, row: 3}, {col: 8, row: 3},
+      // Row 4: Space bar (spanning columns 3-8 for 6 columns) and Backspace (columns 9-10)
+      {col: 3, row: 4, span: 6},
+      {col: 9, row: 4, span: 2}
+    ];
+    
+    // Special layout config for spacebar and backspace
+    const SPACEBAR_INDEX = 26; // Index of spacebar
+    const BACKSPACE_INDEX = 27; // Index of backspace
+
+    // Color hues from warm to cool (28 pads including spacebar and backspace)
+    const hues = Array.from({ length: 28 }, (_, i) => {
+      return Math.round(0 + (280 * i / 27));
+    });
+
+    // Frequency mapping: geometric progression from 131 Hz to 494 Hz (28 pads)
+    const freqMin = 131;
+    const freqMax = 494;
+    const freqRatio = Math.pow(freqMax / freqMin, 1 / 27);
+    const frequencies = Array.from({ length: 28 }, (_, i) => {
+      return freqMin * Math.pow(freqRatio, i);
+    });
+
+    // Audio context (lazy initialization)
+    let audioContext = null;
+    let masterCompressor = null;
+    let masterGain = null;
+
+    function initAudio() {
+      if (audioContext) return;
+      
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Master compressor
+      masterCompressor = audioContext.createDynamicsCompressor();
+      masterCompressor.threshold.value = -12;
+      masterCompressor.knee.value = 24;
+      masterCompressor.ratio.value = 3;
+      masterCompressor.attack.value = 0.003;
+      masterCompressor.release.value = 0.05;
+      
+      // Master gain
+      masterGain = audioContext.createGain();
+      masterGain.gain.value = 0.3;
+      
+      masterCompressor.connect(masterGain);
+      masterGain.connect(audioContext.destination);
+    }
+
+    // Waveshaper for distortion
+    function createDistortionCurve(amount = 20) {
+      const samples = 256;
+      const curve = new Float32Array(samples);
+      for (let i = 0; i < samples; i++) {
+        const x = (i * 2) / samples - 1;
+        curve[i] = ((3 + amount) * x * 20) / (Math.PI + amount * Math.abs(x));
+      }
+      return curve;
+    }
+
+    // Play pad tone
+    function playTone(padIndex) {
+      initAudio();
+      
+      const now = audioContext.currentTime;
+      const baseFreq = frequencies[padIndex];
+      const duration = 0.185; // ~185ms total
+      
+      // Main oscillator (square wave)
+      const osc = audioContext.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(baseFreq * 1.06, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.03); // Chirp down
+      
+      // Vibrato LFO
+      const lfo = audioContext.createOscillator();
+      lfo.frequency.value = 6; // 6 Hz
+      const lfoGain = audioContext.createGain();
+      lfoGain.gain.value = 6; // ±6 Hz
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      
+      // Ring modulation
+      const ringOsc = audioContext.createOscillator();
+      ringOsc.frequency.value = 35 + (padIndex * 2); // 35-83 Hz range
+      const ringGain = audioContext.createGain();
+      const ringConstant = audioContext.createConstantSource();
+      ringConstant.offset.value = 0.5;
+      
+      ringOsc.connect(ringGain.gain);
+      ringConstant.connect(ringGain);
+      osc.connect(ringGain);
+      
+      // Low-pass filter
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 4200;
+      filter.Q.value = 0.7;
+      
+      // Waveshaper distortion
+      const distortion = audioContext.createWaveShaper();
+      distortion.curve = createDistortionCurve(15);
+      distortion.oversample = '4x';
+      
+      // Envelope gain
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.8, now + 0.005); // Attack
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration); // Decay
+      
+      // Connect chain
+      ringGain.connect(filter);
+      filter.connect(distortion);
+      distortion.connect(gain);
+      gain.connect(masterCompressor);
+      
+      // Start/stop
+      osc.start(now);
+      lfo.start(now);
+      ringOsc.start(now);
+      ringConstant.start(now);
+      
+      osc.stop(now + duration);
+      lfo.stop(now + duration);
+      ringOsc.stop(now + duration);
+      ringConstant.stop(now + duration);
+    }
+
+    // Pad state
+    class PadState {
+      constructor(index, element) {
+        this.index = index;
+        this.element = element;
+        this.count = 0;
+        this.isPressed = false;
+        this.holdStartTime = null;
+        this.holdInterval = null;
+        this.countLabel = element.querySelector('.count-label');
+      }
+      
+      increment() {
+        if (this.count >= MAX_COUNT) return;
+        
+        this.count++;
+        this.updateDisplay();
+        playTone(this.index);
+        
+        // Trigger flash animation
+        this.element.classList.remove('flash');
+        void this.element.offsetWidth; // Force reflow to restart animation
+        this.element.classList.add('flash');
+        
+        if (this.count === 1) {
+          this.element.classList.add('touched');
+          this.countLabel.classList.add('visible');
+        }
+      }
+      
+      startPress() {
+        if (this.isPressed) return;
+        
+        this.isPressed = true;
+        this.element.classList.add('is-active');
+        
+        // For backspace, handle deletion instead of incrementing
+        if (this.index === BACKSPACE_INDEX) {
+          handleBackspace();
+          // Don't increment count for backspace
+        } else {
+          this.increment();
+        }
+        
+        // Schedule next action for hold-to-continue (only for non-backspace)
+        if (this.index !== BACKSPACE_INDEX && this.count < MAX_COUNT) {
+          this.holdStartTime = Date.now();
+          this.scheduleNextIncrement();
+        } else if (this.index === BACKSPACE_INDEX) {
+          // For backspace, schedule deletion continuation
+          this.holdStartTime = Date.now();
+          this.scheduleNextIncrement();
+        }
+      }
+      
+      scheduleNextIncrement() {
+        if (!this.isPressed) return;
+        
+        // For backspace, stop if word is empty
+        if (this.index === BACKSPACE_INDEX && currentWord.length === 0) {
+          return;
+        }
+        
+        // For regular pads, stop if count reached max
+        if (this.index !== BACKSPACE_INDEX && this.count >= MAX_COUNT) {
+          return;
+        }
+        
+        const elapsed = (Date.now() - this.holdStartTime) / 1000;
+        const delay = Math.max(30, 150 * Math.exp(-elapsed * 1.5));
+        
+        this.holdInterval = setTimeout(() => {
+          // For backspace, continue deleting instead of incrementing
+          if (this.index === BACKSPACE_INDEX) {
+            handleBackspace();
+            this.scheduleNextIncrement();
+          } else {
+            this.increment();
+            this.scheduleNextIncrement();
+          }
+        }, delay);
+      }
+      
+      endPress() {
+        this.isPressed = false;
+        this.element.classList.remove('is-active');
+        if (this.holdInterval) {
+          clearTimeout(this.holdInterval);
+          this.holdInterval = null;
+        }
+      }
+      
+      updateDisplay() {
+        this.countLabel.textContent = this.count;
+        this.updateSaturation();
+      }
+      
+      updateSaturation() {
+        // Calculate saturation based on count (0 to 100%)
+        const saturation = (this.count / MAX_COUNT) * 100;
+        this.element.style.setProperty('--pad-saturation', `${saturation}%`);
+      }
+    }
+
+    // Create grid
+    const grid = document.getElementById('beatGrid');
+    const pads = [];
+    const keyToPad = new Map();
+
+    for (let i = 0; i < 28; i++) {
+      const pad = document.createElement('button');
+      pad.className = 'pad';
+      
+      // Get position for this key
+      const pos = KEY_POSITIONS[i];
+      
+      // Special handling for spacebar and backspace
+      if (i === SPACEBAR_INDEX) {
+        pad.classList.add('spacebar');
+        pad.style.gridColumn = `${pos.col} / span ${pos.span}`;
+        pad.style.gridRow = pos.row;
+      } else if (i === BACKSPACE_INDEX) {
+        pad.classList.add('backspace');
+        pad.style.gridColumn = `${pos.col} / span ${pos.span}`;
+        pad.style.gridRow = pos.row;
+      } else {
+        // Position regular keys in the grid
+        pad.style.gridColumn = pos.col;
+        pad.style.gridRow = pos.row;
+      }
+      
+      pad.setAttribute('role', 'gridcell');
+      let keyText;
+      if (KEY_MAP[i] === ' ') {
+        keyText = 'SPACE';
+      } else if (KEY_MAP[i] === 'BACKSPACE') {
+        keyText = '⌫';
+      } else {
+        keyText = KEY_MAP[i];
+      }
+      pad.setAttribute('aria-label', `Pad ${i + 1} (Key ${keyText})`);
+      pad.style.setProperty('--hue', hues[i]);
+      
+      // Pad content container
+      const padContent = document.createElement('div');
+      padContent.className = 'pad-content';
+      
+      // Key label (always visible)
+      const keyLabel = document.createElement('div');
+      keyLabel.className = 'key-label';
+      keyLabel.textContent = keyText;
+      padContent.appendChild(keyLabel);
+      
+      // Count label (hidden until first activation)
+      const countLabel = document.createElement('div');
+      countLabel.className = 'count-label';
+      countLabel.textContent = '0';
+      padContent.appendChild(countLabel);
+      
+      pad.appendChild(padContent);
+      
+      grid.appendChild(pad);
+      
+      // Create pad state
+      const padState = new PadState(i, pad);
+      pads.push(padState);
+      
+      // Map key (handle space and backspace specially)
+      let mapKey;
+      if (KEY_MAP[i] === ' ') {
+        mapKey = ' ';
+      } else if (KEY_MAP[i] === 'BACKSPACE') {
+        mapKey = 'BACKSPACE';
+      } else {
+        mapKey = KEY_MAP[i].toUpperCase();
+      }
+      keyToPad.set(mapKey, padState);
+      
+      
+      // Mouse/touch events
+      pad.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        
+        // Start press first (will handle backspace internally)
+        padState.startPress();
+        
+        // For regular letters, also call handleLetterPress
+        if (i !== BACKSPACE_INDEX) {
+          handleLetterPress(KEY_MAP[i]);
+        }
+      });
+      
+      pad.addEventListener('pointerup', () => {
+        padState.endPress();
+      });
+      
+      pad.addEventListener('pointerleave', () => {
+        if (padState.isPressed) {
+          padState.endPress();
+        }
+      });
+    }
+
+    // Multiplayer functionality
+    let socket = null;
+    let userId = null;
+    let username = null;
+    let allUsersBets = {}; // Track all users' bets: { userId: { 'A': 5, 'B': 3, ... } }
+    let userBalances = {}; // Track all users' balances: { userId: 1000 }
+    let connectionAttempted = false; // Track if we've attempted to connect
+    let connectionEstablished = false; // Track if connection was successfully established
+    let errorMessageShown = false; // Track if error message has been shown to avoid duplicates
+    
+    // WebSocket server URL - auto-detect from current host or use environment variable
+    function getWebSocketURL() {
+      // Check for environment variable first (for production WebSocket server)
+      // Set this in Vercel dashboard: Project Settings → Environment Variables → WS_URL
+      // Or set it in the HTML before this script runs: window.WS_URL = 'wss://your-server.com'
+      const envWsUrl = window.WS_URL;
+      if (envWsUrl) {
+        return envWsUrl;
+      }
+      
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      // Use port 8001 for WebSocket (8000 is for HTTP server)
+      const port = 8001;
+      return `${protocol}//${hostname}:${port}`;
+    }
+    
+    const WS_URL = getWebSocketURL();
+    console.log('Connecting to WebSocket:', WS_URL);
+    
+    function generateUserId() {
+      return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    }
+    
+    function generateUsername() {
+      const adjectives = ['Cool', 'Swift', 'Sharp', 'Bold', 'Bright', 'Neon', 'Cyber', 'Pixel'];
+      const nouns = ['Player', 'Gamer', 'Pro', 'Star', 'Hero', 'Ace', 'King', 'Queen'];
+      return adjectives[Math.floor(Math.random() * adjectives.length)] + 
+             nouns[Math.floor(Math.random() * nouns.length)] + 
+             Math.floor(Math.random() * 100);
+    }
+    
+    function connectWebSocket() {
+      try {
+        connectionAttempted = true;
+        connectionEstablished = false;
+        socket = new WebSocket(WS_URL);
+        
+        socket.onopen = () => {
+          console.log('Connected to server:', WS_URL);
+          connectionEstablished = true;
+          addWordToHistory('✅ Connected to server', null, null, null);
+          // Send join message
+          sendMessage({
+            type: 'join',
+            userId: userId,
+            username: username,
+            balance: balance
+          });
+        };
+        
+        socket.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            handleServerMessage(data);
+          } catch (error) {
+            console.error('Error parsing message:', error);
+          }
+        };
+        
+        socket.onerror = (error) => {
+          console.error('WebSocket error:', error);
+          // Don't show error message immediately - will show on close if connection fails
+        };
+        
+        socket.onclose = (event) => {
+          console.log('Disconnected from server:', event.code, event.reason);
+          
+          // Only show error if:
+          // 1. We attempted to connect
+          // 2. Connection was never established (failed to connect)
+          // OR connection was established but dropped unexpectedly (not normal closure)
+          // 3. Haven't shown error message yet (to avoid duplicates)
+          if (connectionAttempted && !errorMessageShown) {
+            if (!connectionEstablished) {
+              // Connection attempt failed - server not available
+              // Only show once, quietly in console
+              console.warn('WebSocket server not available - playing in local mode');
+              // Optionally show a subtle message (commented out to be less intrusive)
+              // addWordToHistory('⚠️ Playing in local mode (server unavailable)', null);
+            } else if (event.code !== 1000) {
+              // Connection was established but dropped unexpectedly
+              addWordToHistory('⚠️ Connection lost - playing in local mode', null, null, null);
+              errorMessageShown = true;
+              // Try to reconnect after 3 seconds
+              setTimeout(() => {
+                if (!socket || socket.readyState === WebSocket.CLOSED) {
+                  console.log('Attempting to reconnect...');
+                  errorMessageShown = false; // Reset for reconnection attempt
+                  connectWebSocket();
+                }
+              }, 3000);
+            }
+          }
+          
+          connectionEstablished = false;
+        };
+      } catch (error) {
+        console.error('Failed to connect:', error);
+        connectionAttempted = true;
+        connectionEstablished = false;
+        // Fallback to local-only mode
+        addWordToHistory('⚠️ WebSocket not supported - playing in local mode', null, null, null);
+      }
+    }
+    
+    function sendMessage(message) {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(message));
+      }
+    }
+    
+    function handleServerMessage(data) {
+      switch (data.type) {
+        case 'bet':
+          // Another user placed a bet
+          handleRemoteBet(data.userId, data.username, data.letter, data.betAmount);
+          break;
+        case 'message':
+          // Another user sent a message
+          addWordToHistory(data.message, data.username, null, data.userId);
+          break;
+        case 'roundStart':
+          // Server started a new round - sync up
+          if (data.roundNumber !== roundNumber) {
+            roundNumber = data.roundNumber;
+            roundNumberEl.textContent = roundNumber;
+          }
+          // Start round locally if not already started
+          if (!isRoundActive) {
+            startRoundFromServer();
+          }
+          break;
+        case 'roundEnd':
+          // Server ended the round - sync winning word
+          if (data.roundNumber !== roundNumber) {
+            roundNumber = data.roundNumber;
+            roundNumberEl.textContent = roundNumber;
+          }
+          // End round locally with server's winning word
+          endRoundFromServer(data.winningWord);
+          break;
+        case 'timerUpdate':
+          // Update timer from server
+          if (isRoundActive && data.timeRemaining !== undefined) {
+            timeRemaining = data.timeRemaining;
+            updateTimer();
+          }
+          break;
+        case 'gameState':
+          // Initial game state from server
+          if (data.roundNumber) {
+            roundNumber = data.roundNumber;
+            roundNumberEl.textContent = roundNumber;
+          }
+          if (data.isRoundActive) {
+            isRoundActive = data.isRoundActive;
+            if (data.timeRemaining) {
+              timeRemaining = data.timeRemaining;
+              updateTimer();
+            }
+            if (!timerInterval) {
+              startRoundFromServer();
+            }
+          } else if (data.winningWord) {
+            winningWordEl.textContent = data.winningWord;
+            winningWordDisplayEl.style.display = 'flex';
+          }
+          break;
+        case 'userJoined':
+          addWordToHistory(`👋 ${data.username} joined`, null, null, null);
+          break;
+        case 'userLeft':
+          addWordToHistory(`👋 ${data.username} left`, null, null, null);
+          break;
+        case 'userBalance':
+          // Update user balance display
+          userBalances[data.userId] = data.balance;
+          break;
+      }
+    }
+    
+    function handleRemoteBet(userId, username, letter, betAmount) {
+      // Track bet for this user
+      if (!allUsersBets[userId]) {
+        allUsersBets[userId] = {};
+      }
+      if (!allUsersBets[userId][letter]) {
+        allUsersBets[userId][letter] = 0;
+      }
+      allUsersBets[userId][letter] += betAmount;
+      
+      // Update pad display to show total bets from all users
+      const padState = keyToPad.get(letter);
+      if (padState) {
+        // Calculate total bets on this letter from all users
+        let totalBets = 0;
+        for (const uid in allUsersBets) {
+          if (allUsersBets[uid][letter]) {
+            totalBets += allUsersBets[uid][letter];
+          }
+        }
+        padState.count = totalBets;
+        padState.updateDisplay();
+      }
+      
+      // Don't show bet notifications in chat - only update pad counts
+      // Users will see the complete word when space is pressed
+    }
+
+    // Chat functionality
+    let currentWord = '';
+    let currentSaturation = 0;
+    let balance = 1000; // Starting balance
+    const BET_AMOUNT = 1; // Cost per letter bet
+    let roundNumber = 1;
+    let timeRemaining = 10;
+    let timerInterval = null;
+    let isRoundActive = false; // Start inactive, wait for server
+    let letterBets = {}; // Track bets per letter: { 'A': 5, 'B': 3, ... }
+    
+    // List of words for winning pattern
+    const WINNING_WORDS = [
+      'HELLO', 'WORLD', 'MUSIC', 'BEATS', 'DANCE', 'PARTY', 'SMART', 'QUICK',
+      'JAZZY', 'BLUES', 'ROCKS', 'SOUND', 'VOICE', 'RHYTHM', 'MELODY', 'CHORD',
+      'PIANO', 'GUITAR', 'DRUMS', 'BASS', 'SONG', 'TUNE', 'NOTE', 'KEY'
+    ];
+    
+    const currentWordEl = document.getElementById('currentWord');
+    const wordHistoryEl = document.getElementById('wordHistory');
+    const balanceAmountEl = document.getElementById('balanceAmount');
+    const usernameDisplayEl = document.getElementById('usernameDisplay');
+    const usernameValueEl = document.getElementById('usernameValue');
+    const roundNumberEl = document.getElementById('roundNumber');
+    const timerValueEl = document.getElementById('timerValue');
+    const winningWordDisplayEl = document.getElementById('winningWordDisplay');
+    const winningWordEl = document.getElementById('winningWord');
+    const stagingArea = currentWordEl.closest('.staging-area');
+    
+    // Initialize user
+    userId = generateUserId();
+    username = generateUsername();
+    usernameValueEl.textContent = username;
+    usernameDisplayEl.style.display = 'flex';
+    
+    // Connect to WebSocket server (will skip if not configured)
+    connectWebSocket();
+
+    function updateBalance() {
+      balanceAmountEl.textContent = `$${balance.toLocaleString()}`;
+      // Change color if balance is low
+      if (balance < 100) {
+        balanceAmountEl.style.color = 'hsl(0, 70%, 60%)';
+      } else if (balance < 500) {
+        balanceAmountEl.style.color = 'hsl(45, 70%, 60%)';
+      } else {
+        balanceAmountEl.style.color = 'hsl(120, 70%, 60%)';
+      }
+    }
+    
+    // Initialize balance display
+    updateBalance();
+    
+    // Don't start round immediately - wait for server connection
+    // If server connects, it will send gameState or startRound
+    // If server doesn't connect, startRound will be called after connection timeout
+    setTimeout(() => {
+      // Only start round if server didn't connect
+      if (!connectionEstablished && !isRoundActive) {
+        startRound();
+      }
+    }, 1000); // Wait 1 second for server connection
+
+    function updateSaturation() {
+      // Cap saturation at 100%
+      const saturation = Math.min(currentSaturation, 100);
+      stagingArea.style.setProperty('--saturation', `${saturation}%`);
+    }
+
+    function updateCurrentWord() {
+      if (currentWord.length === 0) {
+        currentWordEl.textContent = 'Press any key';
+        currentWordEl.classList.add('empty');
+        stagingArea.classList.remove('typing');
+        currentSaturation = 0;
+        updateSaturation();
+      } else {
+        currentWordEl.textContent = currentWord;
+        currentWordEl.classList.remove('empty');
+        stagingArea.classList.add('typing');
+        updateSaturation();
+      }
+    }
+
+    function addWordToHistory(word, usernameParam = null, betAmount = null, messageUserId = null) {
+      if (word.trim().length === 0) return;
+      
+      const wordItem = document.createElement('div');
+      wordItem.className = 'word-item';
+      
+      // Determine if this is the current user's message
+      const isOwnMessage = messageUserId === userId || (messageUserId === null && usernameParam !== null && usernameParam === username);
+      
+      // Add appropriate class based on message ownership
+      if (isOwnMessage) {
+        wordItem.classList.add('own-message');
+      } else if (usernameParam) {
+        wordItem.classList.add('other-message');
+      }
+      
+      // Add username if provided
+      if (usernameParam) {
+        const usernameSpan = document.createElement('span');
+        usernameSpan.className = 'username';
+        usernameSpan.textContent = usernameParam + ':';
+        wordItem.appendChild(usernameSpan);
+      }
+      
+      // Add word text
+      const wordText = document.createTextNode(word);
+      wordItem.appendChild(wordText);
+      
+      // Add bet info if provided
+      if (betAmount !== null) {
+        const betSpan = document.createElement('span');
+        betSpan.className = 'bet-info';
+        betSpan.textContent = `($${betAmount})`;
+        wordItem.appendChild(betSpan);
+      }
+      
+      // Add animation effect
+      wordItem.style.animation = 'slideIn 0.3s ease-out, highlightPulse 0.5s ease-out';
+      
+      // Add to top of history
+      wordHistoryEl.insertBefore(wordItem, wordHistoryEl.firstChild);
+      
+      // Scroll to top to show new word
+      wordHistoryEl.scrollTop = 0;
+    }
+
+    function handleBackspace() {
+      if (currentWord.length > 0) {
+        currentWord = currentWord.slice(0, -1);
+        currentSaturation = Math.max(0, currentSaturation - 1);
+        updateCurrentWord();
+      }
+    }
+
+    function startRound() {
+      isRoundActive = true;
+      timeRemaining = 10;
+      currentWord = '';
+      letterBets = {};
+      allUsersBets = {}; // Clear all users' bets
+      updateCurrentWord();
+      updateTimer();
+      winningWordDisplayEl.style.display = 'none';
+      
+      // Don't broadcast round start - server controls rounds
+      // Only start timer locally if we're not connected or server hasn't started it
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          updateTimer();
+          
+          if (timeRemaining <= 0) {
+            endRound();
+          }
+        }, 1000);
+      }
+    }
+    
+    function startRoundFromServer() {
+      // Start round from server synchronization
+      isRoundActive = true;
+      currentWord = '';
+      letterBets = {};
+      allUsersBets = {}; // Clear all users' bets
+      updateCurrentWord();
+      winningWordDisplayEl.style.display = 'none';
+      
+      // Clear existing timer
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+      
+      // Timer will be updated from server via timerUpdate messages
+      // But we'll also have a local fallback timer
+      timerInterval = setInterval(() => {
+        if (timeRemaining > 0) {
+          timeRemaining--;
+          updateTimer();
+        }
+      }, 1000);
+    }
+    
+    function updateTimer() {
+      timerValueEl.textContent = timeRemaining;
+      
+      // Update timer styling based on time remaining
+      timerValueEl.classList.remove('warning', 'danger');
+      if (timeRemaining <= 3) {
+        timerValueEl.classList.add('danger');
+      } else if (timeRemaining <= 5) {
+        timerValueEl.classList.add('warning');
+      }
+    }
+    
+    function highlightWinningKeys(winningWord) {
+      const winningLetters = new Set(winningWord.split(''));
+      
+      // Highlight pads that match winning letters
+      for (const letter of winningLetters) {
+        const padState = keyToPad.get(letter);
+        if (padState) {
+          padState.element.classList.add('winning');
+        }
+      }
+    }
+    
+    function clearAllBets() {
+      // Reset all pad counts and remove visual states
+      for (let i = 0; i < pads.length; i++) {
+        const padState = pads[i];
+        padState.count = 0;
+        padState.element.classList.remove('touched', 'winning', 'is-active');
+        if (padState.countLabel) {
+          padState.countLabel.classList.remove('visible');
+          padState.countLabel.textContent = '0';
+        }
+        padState.updateDisplay();
+      }
+      // Clear all users' bets tracking
+      allUsersBets = {};
+    }
+    
+    function endRound() {
+      // Only end round locally if server is not connected
+      // Otherwise server controls the round
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        // Server controls rounds, don't end locally
+        return;
+      }
+      
+      isRoundActive = false;
+      clearInterval(timerInterval);
+      
+      // Generate random winning word (only if server not connected)
+      const winningWord = WINNING_WORDS[Math.floor(Math.random() * WINNING_WORDS.length)];
+      winningWordEl.textContent = winningWord;
+      winningWordDisplayEl.style.display = 'flex';
+      
+      // Highlight winning keys first
+      highlightWinningKeys(winningWord);
+      
+      // Calculate winnings for all users
+      const winningLetters = new Set(winningWord.split(''));
+      
+      // Calculate this user's winnings
+      let totalWinnings = 0;
+      for (const letter of winningLetters) {
+        if (letterBets[letter]) {
+          totalWinnings += letterBets[letter];
+        }
+      }
+      
+      // Add winnings to balance
+      balance += totalWinnings;
+      updateBalance();
+      
+      // Show result message
+      if (totalWinnings > 0) {
+        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${winningWord}`, username, null, userId);
+      } else {
+        addWordToHistory(`❌ No win. Winning word: ${winningWord}`, username, null, userId);
+      }
+      
+      // Clear all bets after 2 seconds (keeping highlights visible)
+      setTimeout(() => {
+        clearAllBets();
+      }, 2000);
+      
+      // Start next round after 3 seconds
+      setTimeout(() => {
+        roundNumber++;
+        roundNumberEl.textContent = roundNumber;
+        startRound();
+      }, 3000);
+    }
+    
+    function endRoundFromServer(serverWinningWord) {
+      // End round with server's winning word
+      isRoundActive = false;
+      clearInterval(timerInterval);
+      
+      winningWordEl.textContent = serverWinningWord;
+      winningWordDisplayEl.style.display = 'flex';
+      
+      // Highlight winning keys first
+      highlightWinningKeys(serverWinningWord);
+      
+      // Calculate winnings for all users
+      const winningLetters = new Set(serverWinningWord.split(''));
+      
+      // Calculate this user's winnings
+      let totalWinnings = 0;
+      for (const letter of winningLetters) {
+        if (letterBets[letter]) {
+          totalWinnings += letterBets[letter];
+        }
+      }
+      
+      // Add winnings to balance
+      balance += totalWinnings;
+      updateBalance();
+      
+      // Broadcast balance update
+      sendMessage({
+        type: 'userBalance',
+        userId: userId,
+        username: username,
+        balance: balance
+      });
+      
+      // Show result message
+      if (totalWinnings > 0) {
+        addWordToHistory(`🎉 Won $${totalWinnings.toLocaleString()}! Winning word: ${serverWinningWord}`, username, null, userId);
+      } else {
+        addWordToHistory(`❌ No win. Winning word: ${serverWinningWord}`, username, null, userId);
+      }
+      
+      // Clear all bets after 2 seconds (keeping highlights visible)
+      setTimeout(() => {
+        clearAllBets();
+      }, 2000);
+      
+      // Round will restart from server
+    }
+    
+    function handleLetterPress(letter) {
+      if (!isRoundActive) return; // Don't allow typing after round ends
+      
+      if (letter === ' ') {
+        // Space pressed - move word from staging to chat history
+        if (currentWord.length > 0) {
+          // Send message to all users
+          sendMessage({
+            type: 'message',
+            userId: userId,
+            username: username,
+            message: currentWord
+          });
+          addWordToHistory(currentWord, username, null, userId);
+          currentWord = '';
+          currentSaturation = 0; // Reset saturation for new word
+          updateCurrentWord();
+        }
+      } else {
+        // Regular letter - add to staging area (current word) and deduct bet
+        if (balance >= BET_AMOUNT && isRoundActive) {
+          balance -= BET_AMOUNT;
+          updateBalance();
+          
+          // Track bet for this letter
+          if (!letterBets[letter]) {
+            letterBets[letter] = 0;
+          }
+          letterBets[letter] += BET_AMOUNT;
+          
+          // Track in all users bets
+          if (!allUsersBets[userId]) {
+            allUsersBets[userId] = {};
+          }
+          if (!allUsersBets[userId][letter]) {
+            allUsersBets[userId][letter] = 0;
+          }
+          allUsersBets[userId][letter] += BET_AMOUNT;
+          
+          // Update pad display
+          const padState = keyToPad.get(letter);
+          if (padState) {
+            // Calculate total bets from all users
+            let totalBets = 0;
+            for (const uid in allUsersBets) {
+              if (allUsersBets[uid][letter]) {
+                totalBets += allUsersBets[uid][letter];
+              }
+            }
+            padState.count = totalBets;
+            padState.updateDisplay();
+          }
+          
+          // Broadcast bet to all users
+          sendMessage({
+            type: 'bet',
+            userId: userId,
+            username: username,
+            letter: letter,
+            betAmount: BET_AMOUNT,
+            balance: balance
+          });
+          
+          currentWord += letter;
+          currentSaturation += 1; // Increase saturation by 1 per keystroke
+          updateCurrentWord();
+        } else {
+          // Insufficient balance or round ended
+          if (!isRoundActive) {
+            console.log('Round has ended');
+          } else {
+            console.log('Insufficient balance');
+          }
+        }
+      }
+    }
+
+    // Keyboard events
+    const pressedKeys = new Set();
+
+    document.addEventListener('keydown', (e) => {
+      // Handle backspace, space, or regular keys
+      let key;
+      if (e.key === 'Backspace') {
+        key = 'BACKSPACE';
+      } else if (e.key === ' ') {
+        key = ' ';
+      } else {
+        key = e.key.toUpperCase();
+      }
+      
+      if (pressedKeys.has(key)) return;
+      
+      const padState = keyToPad.get(key);
+      if (padState) {
+        e.preventDefault();
+        pressedKeys.add(key);
+        padState.startPress();
+        
+        // For regular letters, also call handleLetterPress
+        // (backspace is handled in startPress)
+        if (key !== 'BACKSPACE') {
+          handleLetterPress(key);
+        }
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      // Handle backspace, space, or regular keys
+      let key;
+      if (e.key === 'Backspace') {
+        key = 'BACKSPACE';
+      } else if (e.key === ' ') {
+        key = ' ';
+      } else {
+        key = e.key.toUpperCase();
+      }
+      
+      pressedKeys.delete(key);
+      
+      const padState = keyToPad.get(key);
+      if (padState) {
+        e.preventDefault();
+        padState.endPress();
+      }
+    });
+
+    // Prevent context menu on long press
+    document.addEventListener('contextmenu', (e) => {
+      if (e.target.closest('.pad')) {
+        e.preventDefault();
+      }
+    });
+  </script>
+  </body>
+</html>
