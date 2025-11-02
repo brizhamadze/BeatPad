@@ -1411,6 +1411,8 @@
         
         this.isPressed = true;
         this.element.classList.add('is-active');
+        // Force z-index update by accessing style directly - ensures active pad is on top
+        this.element.style.zIndex = '100';
         
         // For backspace, handle deletion instead of incrementing
         if (this.index === BACKSPACE_INDEX) {
@@ -1460,8 +1462,17 @@
       }
       
       endPress() {
+        if (!this.isPressed) return;
+        
         this.isPressed = false;
         this.element.classList.remove('is-active');
+        // Reset z-index when not active (keep touched state if applicable)
+        if (this.element.classList.contains('touched')) {
+          this.element.style.zIndex = '5';
+        } else {
+          this.element.style.zIndex = '';
+        }
+        
         if (this.holdInterval) {
           clearTimeout(this.holdInterval);
           this.holdInterval = null;
