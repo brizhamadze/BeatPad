@@ -195,6 +195,9 @@ process.on('SIGINT', () => {
     type: 'serverShutdown'
   });
   wss.close();
-  process.exit(0);
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
 });
 
